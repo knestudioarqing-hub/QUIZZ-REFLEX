@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { LeadData, QuizAnalysis } from "../types";
+import { LeadData, QuizAnalysis } from "../types.ts";
 
 export const analyzeLead = async (data: LeadData): Promise<QuizAnalysis> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });

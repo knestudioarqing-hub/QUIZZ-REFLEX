@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { LeadData, QuizAnalysis, BusinessStage, Challenge, Budget, Timeline } from './types';
-import { analyzeLead } from './services/geminiService';
+import { LeadData, QuizAnalysis, BusinessStage, Challenge, Budget, Timeline } from './types.ts';
+import { analyzeLead } from './services/geminiService.ts';
 import { 
   ChevronRight, 
   CheckCircle, 
@@ -67,9 +67,9 @@ const App: React.FC = () => {
               <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Escala tu negocio con <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">datos, no suposiciones.</span>
               </h1>
-              <p className="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">
+              <h2 className="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">
                 Obtén un diagnóstico profesional de tu potencial de crecimiento generado por nuestra IA en menos de 2 minutos.
-              </p>
+              </h2>
             </div>
 
             <div className="space-y-4 max-w-md mx-auto">
@@ -109,7 +109,7 @@ const App: React.FC = () => {
             current={leadData.stage}
             onSelect={(val) => { 
               updateLead({ stage: val as BusinessStage }); 
-              setTimeout(nextStep, 400); // Pequeño retraso para ver el cambio de color
+              setTimeout(nextStep, 400); 
             }}
             onBack={prevStep}
           />
@@ -251,7 +251,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-6 md:p-12">
-      {/* Soft White Aurora Background */}
       <div className="fixed inset-0 overflow-hidden -z-10 bg-white">
         <div className="aurora-sphere absolute top-[-5%] left-[-5%] w-[60%] h-[60%] bg-indigo-50 rounded-full"></div>
         <div className="aurora-sphere absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-blue-50 rounded-full" style={{ animationDelay: '-7s' }}></div>
@@ -259,7 +258,6 @@ const App: React.FC = () => {
       </div>
 
       <main className="w-full max-w-4xl relative z-10">
-        {/* Step Indicator */}
         {step > 0 && step < 6 && (
           <div className="mb-12 flex justify-between items-center px-4 max-w-md mx-auto">
             {[1, 2, 3, 4, 5].map((num) => (
@@ -282,7 +280,6 @@ const App: React.FC = () => {
         )}
 
         <div className="glass-card rounded-[3rem] p-8 md:p-16 shadow-2xl relative overflow-hidden border border-white/80">
-          {/* Accent decoration inside card */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[100px] pointer-events-none"></div>
           
           {loading ? (
@@ -299,7 +296,6 @@ const App: React.FC = () => {
           ) : renderStep()}
         </div>
 
-        {/* Brand Footer */}
         {step < 6 && (
           <div className="mt-8 text-center opacity-70">
             <p className="text-slate-400 text-sm font-bold tracking-tighter flex items-center justify-center gap-2 uppercase">
