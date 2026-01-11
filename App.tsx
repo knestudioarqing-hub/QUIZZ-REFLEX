@@ -14,34 +14,54 @@ import {
   ShieldCheck,
   Cpu,
   Sparkles,
-  BarChart3
+  BarChart3,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<QuizAnalysis | null>(null);
   const [leadData, setLeadData] = useState<LeadData>({
     name: '',
     email: '',
-    // Inicializamos con strings vacíos para que no haya selección previa
     stage: '' as any,
     challenge: '' as any,
     budget: '' as any,
     timeline: '' as any
   });
 
-  const nextStep = () => setStep(prev => prev + 1);
-  const prevStep = () => setStep(prev => Math.max(0, prev - 1));
+  const nextStep = () => {
+    setError(null);
+    setStep(prev => prev + 1);
+  };
+  const prevStep = () => {
+    setError(null);
+    setStep(prev => Math.max(0, prev - 1));
+  };
 
   const handleComplete = async () => {
     setLoading(true);
+    setError(null);
     try {
       const result = await analyzeLead(leadData);
       setAnalysis(result);
       setStep(6);
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      let errorMessage = "Hubo un problema al procesar tu diagnóstico. Por favor, inténtalo de nuevo.";
+      
+      // Manejo específico para problemas de API Key en entornos de preview/desarrollo
+      if (err.message?.includes("Requested entity was not found") || err.message?.includes("API key")) {
+        errorMessage = "Se requiere configurar una API Key válida para continuar.";
+        if (window.aistudio) {
+          await window.aistudio.openSelectKey();
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -169,18 +189,32 @@ const App: React.FC = () => {
                 <Cpu className="h-12 w-12 text-indigo-500" />
               </div>
             </div>
+            
+            {error && (
+              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-center gap-3 text-red-600 max-w-sm mx-auto animate-bounce">
+                <AlertCircle className="h-5 w-5 shrink-0" />
+                <p className="text-sm font-medium">{error}</p>
+              </div>
+            )}
+
             <div className="space-y-4">
               <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">DATOS LISTOS.</h2>
               <p className="text-slate-500 text-lg leading-relaxed max-w-sm mx-auto">
                 {leadData.name}, nuestro motor de IA está listo para procesar tu perfil estratégico.
               </p>
             </div>
+
             <div className="flex flex-col items-center gap-4">
               <button 
                 onClick={handleComplete}
-                className="w-full max-w-xs bg-slate-900 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.05] active:scale-95 shadow-xl"
+                disabled={loading}
+                className="w-full max-w-xs bg-slate-900 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.05] active:scale-95 shadow-xl disabled:opacity-50"
               >
-                GENERAR DIAGNÓSTICO <Zap className="h-5 w-5 fill-indigo-400 text-indigo-400" />
+                {loading ? (
+                  <>PROCESANDO... <Loader2 className="h-5 w-5 animate-spin" /></>
+                ) : (
+                  <>GENERAR DIAGNÓSTICO <Zap className="h-5 w-5 fill-indigo-400 text-indigo-400" /></>
+                )}
               </button>
               <button onClick={prevStep} className="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Revisar respuestas</button>
             </div>
@@ -242,7 +276,18 @@ const App: React.FC = () => {
                </div>
             </div>
           </div>
-        ) : null;
+        ) : (
+          <div className="text-center py-12 space-y-6">
+            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+            <p className="text-slate-600 font-bold">No pudimos cargar tu diagnóstico.</p>
+            <button 
+              onClick={() => setStep(0)} 
+              className="inline-flex items-center gap-2 text-indigo-600 font-bold uppercase tracking-widest text-xs"
+            >
+              <RefreshCw className="h-4 w-4" /> Reiniciar Quiz
+            </button>
+          </div>
+        );
 
       default:
         return null;
@@ -289,8 +334,10 @@ const App: React.FC = () => {
                  <Loader2 className="h-16 w-16 text-indigo-600 animate-spin relative z-10" />
               </div>
               <div className="space-y-2 text-center">
-                <h3 className="text-xl font-bold text-slate-900 tracking-widest uppercase">Consultando con la IA...</h3>
-                <p className="text-slate-500">Generando tu hoja de ruta personalizada.</p>
+                <h3 className="text-xl font-bold text-slate-900 tracking-widest uppercase animate-pulse">
+                  CONSULTANDO CON LA IA...
+                </h3>
+                <p className="text-slate-500">Estamos diseñando tu hoja de ruta estratégica.</p>
               </div>
             </div>
           ) : renderStep()}
