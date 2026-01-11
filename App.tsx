@@ -53,7 +53,7 @@ const App: React.FC = () => {
 
     // Recomendações baseadas no Tipo de Negócio e Objetivo
     const recommendations: Record<string, string> = {
-      'Agência': 'Como agência, sua escala depende de processos. Vamos profissionalizar sua entrega e aquisição.',
+      'Serviço': 'Como prestador de serviços, sua escala depende de processos e posicionamento. Vamos profissionalizar sua aquisição.',
       'Infoproduto': 'Produtos digitais precisam de LPs agressivas e funis automáticos. Seu foco deve ser ROI.',
       'Cursos': 'Transformar alunos em fãs requer uma jornada clara. Vamos estruturar seu funil de vendas recorrentes.',
       'Mentorias': 'High ticket exige autoridade. Vamos posicionar você como a solução definitiva no mercado.'
@@ -134,7 +134,7 @@ const App: React.FC = () => {
           <SelectionStep 
             title="Seu Negócio"
             description="Que tipo de negócio você tem hoje?"
-            options={['Agência', 'Infoproduto', 'Cursos', 'Mentorias']}
+            options={['Serviço', 'Infoproduto', 'Cursos', 'Mentorias']}
             current={leadData.businessType}
             onSelect={(val) => { 
               updateLead({ businessType: val as BusinessType }); 
@@ -149,7 +149,7 @@ const App: React.FC = () => {
           <SelectionStep 
             title="Diagnóstico"
             description="Qual é o seu maior gargalo hoje?"
-            options={['Baixa conversão', 'Conversão com leads desqualificados', 'Conversão sem vendas', 'Meu funil não converte', 'Quero hacer um lançamento']}
+            options={['Baixa conversão', 'Conversão com leads desqualificados', 'Conversão sem vendas', 'Meu funil não converte', 'Quero fazer um lançamento']}
             current={leadData.currentDiagnosis}
             onSelect={(val) => { 
               updateLead({ currentDiagnosis: val as DiagnosisType }); 
@@ -262,12 +262,12 @@ const App: React.FC = () => {
             <div className="relative p-1 rounded-[2.5rem] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 overflow-hidden group">
                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                <div className="relative bg-white p-10 rounded-[2.4rem] text-center space-y-6">
-                 <h3 className="text-3xl font-black text-slate-900">Quer executar este plano?</h3>
+                 <h3 className="text-3xl font-black text-slate-900">Quer executar este plan?</h3>
                  <p className="text-slate-500 text-lg max-w-md mx-auto">
                    Reserve uma sessão estratégica gratuita para aprofundar no seu score de {analysis.score}% e criar seu funil de alta conversão.
                  </p>
                  <a 
-                   href="https://calendly.com" 
+                   href="https://api.highlevelowcost.com/widget/booking/plVbjiI0RPnBy1ygJqyy" 
                    target="_blank" 
                    className="inline-flex items-center gap-3 bg-indigo-600 text-white font-black px-10 py-5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-indigo-200"
                  >
@@ -385,7 +385,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({ title, description, optio
         ))}
       </div>
       <div className="flex justify-center pt-4">
-        <button onClick={onBack} className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-200 pb-1">Voltar</button>
+        <button onClick={onBack} className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-200 pb-1">Volver</button>
       </div>
     </div>
   );
