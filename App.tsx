@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { LeadData, QuizAnalysis, BusinessStage, Challenge, Budget, Timeline } from './types.ts';
-import { analyzeLead } from './services/geminiService.ts';
 import { 
   ChevronRight, 
   CheckCircle, 
@@ -15,15 +14,14 @@ import {
   Cpu,
   Sparkles,
   BarChart3,
-  AlertCircle,
-  RefreshCw,
-  Key
+  Trophy,
+  Target,
+  Rocket
 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<QuizAnalysis | null>(null);
   const [leadData, setLeadData] = useState<LeadData>({
     name: '',
@@ -34,43 +32,51 @@ const App: React.FC = () => {
     timeline: '' as any
   });
 
-  const nextStep = () => {
-    setError(null);
-    setStep(prev => prev + 1);
-  };
-  const prevStep = () => {
-    setError(null);
-    setStep(prev => Math.max(0, prev - 1));
+  const nextStep = () => setStep(prev => prev + 1);
+  const prevStep = () => setStep(prev => Math.max(0, prev - 1));
+
+  // Función para generar diagnóstico automático basado en reglas
+  const generateAutomaticDiagnosis = (data: LeadData): QuizAnalysis => {
+    let score = 70; // Base score
+    
+    // Reglas de Score
+    if (data.budget === 'Más de $20k' || data.budget === '$5k - $20k') score += 15;
+    if (data.timeline === 'Inmediato') score += 10;
+    if (data.stage === 'Crecimiento' || data.stage === 'Consolidado') score += 5;
+    if (score > 100) score = 98;
+
+    // Veredicto basado en etapa y desafío
+    const verdicts: Record<string, string> = {
+      'Ventas': 'Tu estructura actual tiene fugas en el proceso comercial que limitan tu techo de ingresos.',
+      'Marketing': 'Tu marca tiene potencial, pero la falta de un sistema predecible de adquisición te mantiene estancado.',
+      'Operaciones': 'El caos operativo está consumiendo tu tiempo y te impide enfocarte en la visión estratégica.',
+      'Tecnología': 'Tus herramientas actuales son un lastre. Necesitas una infraestructura que soporte el volumen que buscas.'
+    };
+
+    // Recomendación personalizada
+    const recommendations: Record<string, string> = {
+      'Idea': 'Es vital que valides con metodología profesional antes de quemar capital innecesariamente.',
+      'Startup': 'Estás en el "valle de la muerte". Un sistema sólido de escalamiento es la diferencia entre morir o despegar.',
+      'Crecimiento': 'El éxito te está desbordando. Necesitas automatizar y delegar para no morir de éxito.',
+      'Consolidado': 'Tu siguiente nivel requiere optimización marginal y expansión a nuevos mercados/canales.'
+    };
+
+    return {
+      score,
+      verdict: verdicts[data.challenge] || 'Tu perfil muestra indicadores claros de una oportunidad de mejora inmediata.',
+      recommendation: recommendations[data.stage] || 'Necesitas un plan de acción concreto para transformar tus desafíos en motores de crecimiento.'
+    };
   };
 
-  const handleOpenKey = async () => {
-    if (window.aistudio) {
-      await window.aistudio.openSelectKey();
-      setError(null);
-    }
-  };
-
-  const handleComplete = async () => {
+  const handleComplete = () => {
     setLoading(true);
-    setError(null);
-    try {
-      const result = await analyzeLead(leadData);
+    // Simulamos un breve procesamiento para mejorar la experiencia de usuario (percepción de valor)
+    setTimeout(() => {
+      const result = generateAutomaticDiagnosis(leadData);
       setAnalysis(result);
       setStep(6);
-    } catch (err: any) {
-      const msg = err.message || "";
-      console.error("Capture Error:", msg);
-      
-      if (msg.includes("API_KEY_MISSING") || msg.includes("entity was not found") || msg.includes("API key")) {
-        setError("Se requiere configurar una API Key válida (Pay-as-you-go).");
-      } else if (msg.includes("429") || msg.includes("Quota")) {
-        setError("Límite de peticiones excedido. Intenta de nuevo en un minuto.");
-      } else {
-        setError(`Error: ${msg.substring(0, 100)}...`);
-      }
-    } finally {
       setLoading(false);
-    }
+    }, 1200);
   };
 
   const updateLead = (updates: Partial<LeadData>) => {
@@ -91,10 +97,10 @@ const App: React.FC = () => {
                 />
               </div>
               <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Escala tu negocio con <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">datos, no suposiciones.</span>
+                Escala tu negocio con <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">datos reales.</span>
               </h1>
               <h2 className="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">
-                Obtén un diagnóstico profesional de tu potencial de crecimiento generado por nuestra IA en menos de 2 minutos.
+                Obtén un diagnóstico profesional de tu potencial de crecimiento basado en nuestra metodología probada.
               </h2>
             </div>
 
@@ -120,7 +126,7 @@ const App: React.FC = () => {
                 Comenzar Evaluación <ChevronRight className="h-5 w-5" />
               </button>
               <p className="text-slate-400 text-xs flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-green-500" /> Tu privacidad es nuestra prioridad estratégica
+                <ShieldCheck className="w-4 h-4 text-green-500" /> Diagnóstico inmediato y gratuito
               </p>
             </div>
           </div>
@@ -192,31 +198,14 @@ const App: React.FC = () => {
             <div className="relative inline-block">
               <div className="absolute inset-0 bg-indigo-100 blur-3xl rounded-full"></div>
               <div className="relative bg-white border border-slate-100 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl">
-                <Cpu className="h-12 w-12 text-indigo-500" />
+                <Rocket className="h-12 w-12 text-indigo-500" />
               </div>
             </div>
             
-            {error && (
-              <div className="space-y-4 max-w-sm mx-auto">
-                <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-center gap-3 text-red-600 text-left">
-                  <AlertCircle className="h-5 w-5 shrink-0" />
-                  <p className="text-xs font-bold leading-tight">{error}</p>
-                </div>
-                {error.includes("API Key") && (
-                  <button 
-                    onClick={handleOpenKey}
-                    className="flex items-center gap-2 mx-auto text-indigo-600 font-bold text-xs uppercase tracking-widest hover:underline"
-                  >
-                    <Key className="w-4 h-4" /> Configurar Llave
-                  </button>
-                )}
-              </div>
-            )}
-
             <div className="space-y-4">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">DATOS LISTOS.</h2>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">ANÁLISIS LISTO.</h2>
               <p className="text-slate-500 text-lg leading-relaxed max-w-sm mx-auto">
-                {leadData.name}, nuestro motor de IA está listo para procesar tu perfil estratégico.
+                {leadData.name}, hemos procesado tus respuestas y tenemos tu hoja de ruta estratégica.
               </p>
             </div>
 
@@ -227,9 +216,9 @@ const App: React.FC = () => {
                 className="w-full max-w-xs bg-slate-900 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.05] active:scale-95 shadow-xl disabled:opacity-50"
               >
                 {loading ? (
-                  <>PROCESANDO... <Loader2 className="h-5 w-5 animate-spin" /></>
+                  <>GENERANDO... <Loader2 className="h-5 w-5 animate-spin" /></>
                 ) : (
-                  <>GENERAR DIAGNÓSTICO <Zap className="h-5 w-5 fill-indigo-400 text-indigo-400" /></>
+                  <>VER RESULTADOS <Zap className="h-5 w-5 fill-indigo-400 text-indigo-400" /></>
                 )}
               </button>
               <button onClick={prevStep} className="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Revisar respuestas</button>
@@ -242,9 +231,9 @@ const App: React.FC = () => {
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <div className="text-center space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-black tracking-widest uppercase">
-                <BarChart3 className="w-4 h-4" /> AI ANALYSIS COMPLETE
+                <Trophy className="w-4 h-4" /> DIAGNÓSTICO ESTRATÉGICO
               </div>
-              <h2 className="text-5xl font-black text-slate-900 tracking-tighter">TU POTENCIAL DE ÉXITO</h2>
+              <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase">TU POTENCIAL DE ESCALADO</h2>
               
               <div className="relative flex justify-center py-6">
                  <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-indigo-600 to-indigo-900">
@@ -257,15 +246,15 @@ const App: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-5">
               <div className="bg-slate-50 p-8 rounded-[2rem] space-y-4 border border-slate-100">
                 <h3 className="text-indigo-600 font-black text-sm uppercase tracking-widest flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" /> Veredicto Estratégico
+                  <Target className="h-4 w-4" /> Punto Crítico
                 </h3>
-                <p className="text-slate-700 leading-relaxed text-lg font-medium italic">
-                  "{analysis.verdict}"
+                <p className="text-slate-700 leading-relaxed text-lg font-medium">
+                  {analysis.verdict}
                 </p>
               </div>
               <div className="bg-slate-50 p-8 rounded-[2rem] space-y-4 border border-slate-100">
                 <h3 className="text-purple-600 font-black text-sm uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" /> Recomendación IA
+                  <Sparkles className="h-4 w-4" /> Hoja de Ruta
                 </h3>
                 <p className="text-slate-700 leading-relaxed text-lg">
                   {analysis.recommendation}
@@ -278,7 +267,7 @@ const App: React.FC = () => {
                <div className="relative bg-white p-10 rounded-[2.4rem] text-center space-y-6">
                  <h3 className="text-3xl font-black text-slate-900">¿Quieres ejecutar este plan?</h3>
                  <p className="text-slate-500 text-lg max-w-md mx-auto">
-                   Reserva una sesión estratégica gratuita para profundizar en tu puntaje de {analysis.score}%.
+                   Reserva una sesión estratégica gratuita para profundizar en tu puntaje de {analysis.score}% y crear tu plan de acción.
                  </p>
                  <a 
                    href="https://calendly.com" 
@@ -288,22 +277,11 @@ const App: React.FC = () => {
                    Agendar minha asesoria gratuita
                    <Calendar className="h-6 w-6" />
                  </a>
-                 <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">Cupos limitados por semana</p>
+                 <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">Cupos limitados para el mes de {new Date().toLocaleString('es', { month: 'long' })}</p>
                </div>
             </div>
           </div>
-        ) : (
-          <div className="text-center py-12 space-y-6">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-            <p className="text-slate-600 font-bold">No pudimos cargar tu diagnóstico.</p>
-            <button 
-              onClick={() => setStep(0)} 
-              className="inline-flex items-center gap-2 text-indigo-600 font-bold uppercase tracking-widest text-xs"
-            >
-              <RefreshCw className="h-4 w-4" /> Reiniciar Quiz
-            </button>
-          </div>
-        );
+        ) : null;
 
       default:
         return null;
@@ -351,9 +329,9 @@ const App: React.FC = () => {
               </div>
               <div className="space-y-2 text-center">
                 <h3 className="text-xl font-bold text-slate-900 tracking-widest uppercase animate-pulse">
-                  CONSULTANDO CON LA IA...
+                  CALCULANDO RESULTADOS...
                 </h3>
-                <p className="text-slate-500">Estamos diseñando tu hoja de ruta estratégica.</p>
+                <p className="text-slate-500">Analizando tu perfil en base a nuestra base de datos.</p>
               </div>
             </div>
           ) : renderStep()}
@@ -384,7 +362,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({ title, description, optio
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
       <div className="text-center space-y-3">
-        <h2 className="text-4xl font-black text-slate-900 tracking-tighter">{title}</h2>
+        <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">{title}</h2>
         <p className="text-slate-500 text-lg leading-relaxed">{description}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
