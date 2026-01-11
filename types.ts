@@ -1,16 +1,16 @@
 
-export type BusinessStage = 'Idea' | 'Startup' | 'Crecimiento' | 'Consolidado';
-export type Challenge = 'Ventas' | 'Marketing' | 'Operaciones' | 'Tecnología';
-export type Budget = 'Menos de $1k' | '$1k - $5k' | '$5k - $20k' | 'Más de $20k';
-export type Timeline = 'Inmediato' | '1-3 meses' | '3-6 meses' | 'Solo explorando';
+export type BusinessType = 'Agência' | 'Infoproduto' | 'Cursos' | 'Mentorias';
+export type DiagnosisType = 'Baixa conversão' | 'Conversão com leads desqualificados' | 'Conversão sem vendas' | 'Meu funil não converte' | 'Quero fazer um lançamento';
+export type RevenueRange = 'R$ 0 - 2.000' | 'R$ 2.000 - 5.000' | 'R$ 5.000 - 10.000' | '+ R$ 10.000';
+export type GoalType = 'Aumentar minhas vendas' | 'Obter leads qualificados' | 'Uma landing page profissional e de alta conversão' | 'Os 3 juntos';
 
 export interface LeadData {
   name: string;
   email?: string;
-  stage: BusinessStage;
-  challenge: Challenge;
-  budget: Budget;
-  timeline: Timeline;
+  businessType: BusinessType;
+  currentDiagnosis: DiagnosisType;
+  revenue: RevenueRange;
+  goal: GoalType;
 }
 
 export interface QuizAnalysis {

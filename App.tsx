@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { LeadData, QuizAnalysis, BusinessStage, Challenge, Budget, Timeline } from './types.ts';
+import { LeadData, QuizAnalysis, BusinessType, DiagnosisType, RevenueRange, GoalType } from './types.ts';
 import { 
   ChevronRight, 
   CheckCircle, 
@@ -11,12 +11,10 @@ import {
   User,
   ArrowRight,
   ShieldCheck,
-  Cpu,
+  Rocket,
   Sparkles,
-  BarChart3,
   Trophy,
-  Target,
-  Rocket
+  Target
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -26,57 +24,56 @@ const App: React.FC = () => {
   const [leadData, setLeadData] = useState<LeadData>({
     name: '',
     email: '',
-    stage: '' as any,
-    challenge: '' as any,
-    budget: '' as any,
-    timeline: '' as any
+    businessType: '' as any,
+    currentDiagnosis: '' as any,
+    revenue: '' as any,
+    goal: '' as any
   });
 
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => Math.max(0, prev - 1));
 
-  // Función para generar diagnóstico automático basado en reglas
   const generateAutomaticDiagnosis = (data: LeadData): QuizAnalysis => {
-    let score = 70; // Base score
+    let score = 65; // Base
     
-    // Reglas de Score
-    if (data.budget === 'Más de $20k' || data.budget === '$5k - $20k') score += 15;
-    if (data.timeline === 'Inmediato') score += 10;
-    if (data.stage === 'Crecimiento' || data.stage === 'Consolidado') score += 5;
-    if (score > 100) score = 98;
+    // Lógica de Score baseada em Faturamento e Objetivo
+    if (data.revenue === '+ R$ 10.000') score += 20;
+    if (data.revenue === 'R$ 5.000 - 10.000') score += 15;
+    if (data.goal === 'Os 3 juntos') score += 10;
+    if (score > 100) score = 99;
 
-    // Veredicto basado en etapa y desafío
+    // Veredictos baseados no Diagnóstico Atual
     const verdicts: Record<string, string> = {
-      'Ventas': 'Tu estructura actual tiene fugas en el proceso comercial que limitan tu techo de ingresos.',
-      'Marketing': 'Tu marca tiene potencial, pero la falta de un sistema predecible de adquisición te mantiene estancado.',
-      'Operaciones': 'El caos operativo está consumiendo tu tiempo y te impide enfocarte en la visión estratégica.',
-      'Tecnología': 'Tus herramientas actuales son un lastre. Necesitas una infraestructura que soporte el volumen que buscas.'
+      'Baixa conversão': 'Seu funil está retendo menos de 1% do tráfego. Você está perdendo dinheiro em cada clique.',
+      'Conversão com leads desqualificados': 'Sua comunicação está atraindo curiosos, não compradores. É necessário filtrar seu público imediatamente.',
+      'Conversão sem vendas': 'O problema está na oferta ou no fechamento. O lead chega, mas não confia o suficiente para pagar.',
+      'Meu funil não converte': 'Há uma quebra estrutural na jornada do seu cliente que impede qualquer tração financeira.',
+      'Quero fazer um lançamento': 'Lançamentos sem base sólida são arriscados. Você precisa de uma estrutura de validação antes de escalar.'
     };
 
-    // Recomendación personalizada
+    // Recomendações baseadas no Tipo de Negócio e Objetivo
     const recommendations: Record<string, string> = {
-      'Idea': 'Es vital que valides con metodología profesional antes de quemar capital innecesariamente.',
-      'Startup': 'Estás en el "valle de la muerte". Un sistema sólido de escalamiento es la diferencia entre morir o despegar.',
-      'Crecimiento': 'El éxito te está desbordando. Necesitas automatizar y delegar para no morir de éxito.',
-      'Consolidado': 'Tu siguiente nivel requiere optimización marginal y expansión a nuevos mercados/canales.'
+      'Agência': 'Como agência, sua escala depende de processos. Vamos profissionalizar sua entrega e aquisição.',
+      'Infoproduto': 'Produtos digitais precisam de LPs agressivas e funis automáticos. Seu foco deve ser ROI.',
+      'Cursos': 'Transformar alunos em fãs requer uma jornada clara. Vamos estruturar seu funil de vendas recorrentes.',
+      'Mentorias': 'High ticket exige autoridade. Vamos posicionar você como a solução definitiva no mercado.'
     };
 
     return {
       score,
-      verdict: verdicts[data.challenge] || 'Tu perfil muestra indicadores claros de una oportunidad de mejora inmediata.',
-      recommendation: recommendations[data.stage] || 'Necesitas un plan de acción concreto para transformar tus desafíos en motores de crecimiento.'
+      verdict: verdicts[data.currentDiagnosis] || 'Identificamos gargalos críticos na sua operação comercial.',
+      recommendation: recommendations[data.businessType] || 'É necessário um plano de ação imediato para atingir seus objetivos de faturamento.'
     };
   };
 
   const handleComplete = () => {
     setLoading(true);
-    // Simulamos un breve procesamiento para mejorar la experiencia de usuario (percepción de valor)
     setTimeout(() => {
       const result = generateAutomaticDiagnosis(leadData);
       setAnalysis(result);
       setStep(6);
       setLoading(false);
-    }, 1200);
+    }, 1500);
   };
 
   const updateLead = (updates: Partial<LeadData>) => {
@@ -97,10 +94,10 @@ const App: React.FC = () => {
                 />
               </div>
               <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Escala tu negocio con <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">datos reales.</span>
+                Escala o seu negócio com <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">dados reais.</span>
               </h1>
               <h2 className="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">
-                Obtén un diagnóstico profesional de tu potencial de crecimiento basado en nuestra metodología probada.
+                Obtenha um diagnóstico profissional do seu potencial de crescimento baseado em nossa metodologia comprovada.
               </h2>
             </div>
 
@@ -109,7 +106,7 @@ const App: React.FC = () => {
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5 transition-colors group-focus-within:text-indigo-500" />
                 <input 
                   type="text" 
-                  placeholder="Escribe tu nombre aquí..." 
+                  placeholder="Escreva seu nome aqui..." 
                   className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none"
                   value={leadData.name}
                   onChange={e => updateLead({ name: e.target.value })}
@@ -123,10 +120,10 @@ const App: React.FC = () => {
                 onClick={nextStep}
                 className="w-full max-w-md bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:cursor-not-allowed text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200 glow-button"
               >
-                Comenzar Evaluación <ChevronRight className="h-5 w-5" />
+                Começar Avaliação <ChevronRight className="h-5 w-5" />
               </button>
               <p className="text-slate-400 text-xs flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-green-500" /> Diagnóstico inmediato y gratuito
+                <ShieldCheck className="w-4 h-4 text-green-500" /> Diagnóstico imediato e gratuito
               </p>
             </div>
           </div>
@@ -135,12 +132,12 @@ const App: React.FC = () => {
       case 1:
         return (
           <SelectionStep 
-            title="Etapa de tu Negocio"
-            description="¿En qué punto de la curva de crecimiento te encuentras?"
-            options={['Idea', 'Startup', 'Crecimiento', 'Consolidado']}
-            current={leadData.stage}
+            title="Seu Negócio"
+            description="Que tipo de negócio você tem hoje?"
+            options={['Agência', 'Infoproduto', 'Cursos', 'Mentorias']}
+            current={leadData.businessType}
             onSelect={(val) => { 
-              updateLead({ stage: val as BusinessStage }); 
+              updateLead({ businessType: val as BusinessType }); 
               setTimeout(nextStep, 400); 
             }}
             onBack={prevStep}
@@ -150,12 +147,12 @@ const App: React.FC = () => {
       case 2:
         return (
           <SelectionStep 
-            title="Mayor Desafío"
-            description="¿Cuál es el principal cuello de botella que frena tu expansión?"
-            options={['Ventas', 'Marketing', 'Operaciones', 'Tecnología']}
-            current={leadData.challenge}
+            title="Diagnóstico"
+            description="Qual é o seu maior gargalo hoje?"
+            options={['Baixa conversão', 'Conversão com leads desqualificados', 'Conversão sem vendas', 'Meu funil não converte', 'Quero hacer um lançamento']}
+            current={leadData.currentDiagnosis}
             onSelect={(val) => { 
-              updateLead({ challenge: val as Challenge }); 
+              updateLead({ currentDiagnosis: val as DiagnosisType }); 
               setTimeout(nextStep, 400); 
             }}
             onBack={prevStep}
@@ -165,12 +162,12 @@ const App: React.FC = () => {
       case 3:
         return (
           <SelectionStep 
-            title="Capacidad de Inversión"
-            description="Presupuesto mensual destinado a escalamiento estratégico."
-            options={['Menos de $1k', '$1k - $5k', '$5k - $20k', 'Más de $20k']}
-            current={leadData.budget}
+            title="Faturamento"
+            description="Qual é o seu nível de faturamento atual mensal?"
+            options={['R$ 0 - 2.000', 'R$ 2.000 - 5.000', 'R$ 5.000 - 10.000', '+ R$ 10.000']}
+            current={leadData.revenue}
             onSelect={(val) => { 
-              updateLead({ budget: val as Budget }); 
+              updateLead({ revenue: val as RevenueRange }); 
               setTimeout(nextStep, 400); 
             }}
             onBack={prevStep}
@@ -180,12 +177,12 @@ const App: React.FC = () => {
       case 4:
         return (
           <SelectionStep 
-            title="Horizonte Temporal"
-            description="¿Qué tan pronto buscas ver resultados tangibles?"
-            options={['Inmediato', '1-3 meses', '3-6 meses', 'Solo explorando']}
-            current={leadData.timeline}
+            title="Objetivo"
+            description="Que retorno você quer gerar se começarmos agora?"
+            options={['Aumentar minhas vendas', 'Obter leads qualificados', 'Uma landing page profissional e de alta conversão', 'Os 3 juntos']}
+            current={leadData.goal}
             onSelect={(val) => { 
-              updateLead({ timeline: val as Timeline }); 
+              updateLead({ goal: val as GoalType }); 
               setTimeout(nextStep, 400); 
             }}
             onBack={prevStep}
@@ -203,9 +200,9 @@ const App: React.FC = () => {
             </div>
             
             <div className="space-y-4">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">ANÁLISIS LISTO.</h2>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">ANÁLISE PRONTA.</h2>
               <p className="text-slate-500 text-lg leading-relaxed max-w-sm mx-auto">
-                {leadData.name}, hemos procesado tus respuestas y tenemos tu hoja de ruta estratégica.
+                {leadData.name}, processamos suas respostas e temos seu plano de ação estratégico.
               </p>
             </div>
 
@@ -216,12 +213,12 @@ const App: React.FC = () => {
                 className="w-full max-w-xs bg-slate-900 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.05] active:scale-95 shadow-xl disabled:opacity-50"
               >
                 {loading ? (
-                  <>GENERANDO... <Loader2 className="h-5 w-5 animate-spin" /></>
+                  <>GERANDO... <Loader2 className="h-5 w-5 animate-spin" /></>
                 ) : (
                   <>VER RESULTADOS <Zap className="h-5 w-5 fill-indigo-400 text-indigo-400" /></>
                 )}
               </button>
-              <button onClick={prevStep} className="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Revisar respuestas</button>
+              <button onClick={prevStep} className="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Revisar respostas</button>
             </div>
           </div>
         );
@@ -233,7 +230,7 @@ const App: React.FC = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-black tracking-widest uppercase">
                 <Trophy className="w-4 h-4" /> DIAGNÓSTICO ESTRATÉGICO
               </div>
-              <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase">TU POTENCIAL DE ESCALADO</h2>
+              <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase">SEU POTENCIAL DE ESCALAMENTO</h2>
               
               <div className="relative flex justify-center py-6">
                  <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-indigo-600 to-indigo-900">
@@ -246,7 +243,7 @@ const App: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-5">
               <div className="bg-slate-50 p-8 rounded-[2rem] space-y-4 border border-slate-100">
                 <h3 className="text-indigo-600 font-black text-sm uppercase tracking-widest flex items-center gap-2">
-                  <Target className="h-4 w-4" /> Punto Crítico
+                  <Target className="h-4 w-4" /> Ponto Crítico
                 </h3>
                 <p className="text-slate-700 leading-relaxed text-lg font-medium">
                   {analysis.verdict}
@@ -254,7 +251,7 @@ const App: React.FC = () => {
               </div>
               <div className="bg-slate-50 p-8 rounded-[2rem] space-y-4 border border-slate-100">
                 <h3 className="text-purple-600 font-black text-sm uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" /> Hoja de Ruta
+                  <Sparkles className="h-4 w-4" /> Plano de Ação
                 </h3>
                 <p className="text-slate-700 leading-relaxed text-lg">
                   {analysis.recommendation}
@@ -265,19 +262,19 @@ const App: React.FC = () => {
             <div className="relative p-1 rounded-[2.5rem] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 overflow-hidden group">
                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                <div className="relative bg-white p-10 rounded-[2.4rem] text-center space-y-6">
-                 <h3 className="text-3xl font-black text-slate-900">¿Quieres ejecutar este plan?</h3>
+                 <h3 className="text-3xl font-black text-slate-900">Quer executar este plano?</h3>
                  <p className="text-slate-500 text-lg max-w-md mx-auto">
-                   Reserva una sesión estratégica gratuita para profundizar en tu puntaje de {analysis.score}% y crear tu plan de acción.
+                   Reserve uma sessão estratégica gratuita para aprofundar no seu score de {analysis.score}% e criar seu funil de alta conversão.
                  </p>
                  <a 
                    href="https://calendly.com" 
                    target="_blank" 
                    className="inline-flex items-center gap-3 bg-indigo-600 text-white font-black px-10 py-5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-indigo-200"
                  >
-                   Agendar minha asesoria gratuita
+                   Agendar minha assessoria gratuita
                    <Calendar className="h-6 w-6" />
                  </a>
-                 <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">Cupos limitados para el mes de {new Date().toLocaleString('es', { month: 'long' })}</p>
+                 <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">Vagas limitadas para o mês de {new Date().toLocaleString('pt-BR', { month: 'long' })}</p>
                </div>
             </div>
           </div>
@@ -331,7 +328,7 @@ const App: React.FC = () => {
                 <h3 className="text-xl font-bold text-slate-900 tracking-widest uppercase animate-pulse">
                   CALCULANDO RESULTADOS...
                 </h3>
-                <p className="text-slate-500">Analizando tu perfil en base a nuestra base de datos.</p>
+                <p className="text-slate-500">Analisando seu perfil com base em nossa metodologia.</p>
               </div>
             </div>
           ) : renderStep()}
@@ -388,7 +385,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({ title, description, optio
         ))}
       </div>
       <div className="flex justify-center pt-4">
-        <button onClick={onBack} className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-200 pb-1">Volver</button>
+        <button onClick={onBack} className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-200 pb-1">Voltar</button>
       </div>
     </div>
   );
