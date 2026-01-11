@@ -16,7 +16,8 @@ import {
   Sparkles,
   BarChart3,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Key
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -42,6 +43,13 @@ const App: React.FC = () => {
     setStep(prev => Math.max(0, prev - 1));
   };
 
+  const handleOpenKey = async () => {
+    if (window.aistudio) {
+      await window.aistudio.openSelectKey();
+      setError(null);
+    }
+  };
+
   const handleComplete = async () => {
     setLoading(true);
     setError(null);
@@ -50,18 +58,16 @@ const App: React.FC = () => {
       setAnalysis(result);
       setStep(6);
     } catch (err: any) {
-      console.error(err);
-      let errorMessage = "Hubo un problema al procesar tu diagnóstico. Por favor, inténtalo de nuevo.";
+      const msg = err.message || "";
+      console.error("Capture Error:", msg);
       
-      // Manejo específico para problemas de API Key en entornos de preview/desarrollo
-      if (err.message?.includes("Requested entity was not found") || err.message?.includes("API key")) {
-        errorMessage = "Se requiere configurar una API Key válida para continuar.";
-        if (window.aistudio) {
-          await window.aistudio.openSelectKey();
-        }
+      if (msg.includes("API_KEY_MISSING") || msg.includes("entity was not found") || msg.includes("API key")) {
+        setError("Se requiere configurar una API Key válida (Pay-as-you-go).");
+      } else if (msg.includes("429") || msg.includes("Quota")) {
+        setError("Límite de peticiones excedido. Intenta de nuevo en un minuto.");
+      } else {
+        setError(`Error: ${msg.substring(0, 100)}...`);
       }
-      
-      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -191,9 +197,19 @@ const App: React.FC = () => {
             </div>
             
             {error && (
-              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-center gap-3 text-red-600 max-w-sm mx-auto animate-bounce">
-                <AlertCircle className="h-5 w-5 shrink-0" />
-                <p className="text-sm font-medium">{error}</p>
+              <div className="space-y-4 max-w-sm mx-auto">
+                <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-center gap-3 text-red-600 text-left">
+                  <AlertCircle className="h-5 w-5 shrink-0" />
+                  <p className="text-xs font-bold leading-tight">{error}</p>
+                </div>
+                {error.includes("API Key") && (
+                  <button 
+                    onClick={handleOpenKey}
+                    className="flex items-center gap-2 mx-auto text-indigo-600 font-bold text-xs uppercase tracking-widest hover:underline"
+                  >
+                    <Key className="w-4 h-4" /> Configurar Llave
+                  </button>
+                )}
               </div>
             )}
 
