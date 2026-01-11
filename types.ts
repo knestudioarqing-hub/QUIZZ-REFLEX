@@ -6,7 +6,6 @@ export type GoalType = 'Aumentar minhas vendas' | 'Obter leads qualificados' | '
 
 export interface LeadData {
   name: string;
-  email?: string;
   businessType: BusinessType;
   currentDiagnosis: DiagnosisType;
   revenue: RevenueRange;
