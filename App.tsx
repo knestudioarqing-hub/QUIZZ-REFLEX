@@ -89,7 +89,7 @@ const App: React.FC = () => {
               <div className="flex justify-center mb-2">
                 <img 
                   src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" 
-                  alt="Reflex Engine Logo" 
+                  alt="REFLEX AC Logo" 
                   className="h-[20px] md:h-[30px] object-contain"
                 />
               </div>
@@ -337,7 +337,7 @@ const App: React.FC = () => {
         {step < 6 && (
           <div className="mt-8 text-center opacity-70">
             <p className="text-slate-400 text-sm font-bold tracking-tighter flex items-center justify-center gap-2 uppercase">
-              POWERED BY REFLEX ENGINE <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+              POWERED BY REFLEX AC <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
             </p>
           </div>
         )}
