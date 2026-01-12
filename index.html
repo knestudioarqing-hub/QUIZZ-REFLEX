@@ -3,18 +3,24 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REFLEX AC | Evaluation Quiz</title>
     <!-- Favicon personalizado con a letra R -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231D2889%22/><text y=%22.9em%22 x=%2250%25%22 font-family=%22Plus Jakarta Sans, sans-serif%22 font-weight=%22800%22 font-size=%2270%22 fill=%22white%22 text-anchor=%22middle%22>R</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Elimina scroll vertical del navegador */
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-            overflow-x: hidden;
+            background-color: #fbfbfd;
             color: #050637;
+        }
+        #root {
+            height: 100%;
         }
         .aurora-sphere {
             filter: blur(120px);
@@ -26,14 +32,15 @@
             0% { transform: translate(0, 0) scale(1); }
             100% { transform: translate(80px, 40px) scale(1.1); }
         }
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Custom internal scrollbar for results if needed */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
         }
-        ::-webkit-scrollbar-track {
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
             background: #E2E7EF;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #899EC8;
             border-radius: 10px;
         }
     </style>
@@ -52,7 +59,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- Carga del script principal -->
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>

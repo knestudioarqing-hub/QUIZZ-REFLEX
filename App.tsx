@@ -128,251 +128,240 @@ const App: React.FC = () => {
   }, [step]);
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center p-4 sm:p-6 bg-[#fbfbfd] overflow-x-hidden selection:bg-[#3E5ABA]/20 selection:text-[#050637]">
+    <div className="h-screen w-screen flex flex-col items-center justify-center p-3 sm:p-6 bg-[#fbfbfd] overflow-hidden selection:bg-[#3E5ABA]/20 selection:text-[#050637] relative">
       {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-[60vw] h-[60vw] bg-[#E2E7EF] rounded-full blur-[120px] opacity-40"></div>
         <div className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-[#899EC8]/10 rounded-full blur-[100px] opacity-30"></div>
       </div>
 
-      <main className="w-full max-w-5xl relative z-10 flex flex-col items-center">
+      <main className="w-full max-w-5xl h-full flex flex-col items-center justify-center relative z-10 py-4">
         
-        {/* Progress Tracker */}
+        {/* Progress Tracker (Reduced size on mobile) */}
         {step > 0 && step <= 20 && (
-          <div className="fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-500 w-[90%] sm:w-auto">
-            <div className="bg-white/90 backdrop-blur-md border border-[#E2E7EF] rounded-full px-4 sm:px-6 py-2 shadow-sm flex items-center justify-center gap-3 sm:gap-4">
-               <span className="text-[9px] sm:text-[10px] font-extrabold text-[#686A86] tracking-[0.15em] sm:tracking-[0.2em] uppercase">Progresso</span>
+          <div className="mb-4 animate-in fade-in slide-in-from-top-4 duration-500 w-auto">
+            <div className="bg-white/90 backdrop-blur-md border border-[#E2E7EF] rounded-full px-4 py-1.5 shadow-sm flex items-center justify-center gap-3">
+               <span className="text-[8px] sm:text-[10px] font-extrabold text-[#686A86] tracking-widest uppercase">Progresso</span>
                <div className="w-20 sm:w-32 h-1 bg-[#E2E7EF] rounded-full overflow-hidden">
                  <div className="h-full bg-[#1D2889] transition-all duration-700 ease-out" style={{ width: `${progress}%` }}></div>
                </div>
-               <span className="text-[10px] sm:text-xs font-bold text-[#1D2889]">{progress}%</span>
+               <span className="text-[10px] font-bold text-[#1D2889]">{progress}%</span>
             </div>
           </div>
         )}
 
         <div className={`w-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] 
-          ${step === 22 ? 'max-w-6xl' : 'max-w-4xl'}
-          bg-white border border-[#E2E7EF] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.03)] rounded-[1.5rem] sm:rounded-[2.5rem] 
-          ${step === 0 ? 'p-6 sm:p-16 lg:p-24' : 'p-4 sm:p-12 lg:p-16'}
-          flex flex-col min-h-[500px] sm:min-h-[620px] justify-center relative overflow-hidden`}>
+          ${step === 22 ? 'max-w-6xl h-full lg:h-auto max-h-[92vh]' : 'max-w-4xl max-h-[85vh]'}
+          bg-white border border-[#E2E7EF] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.03)] rounded-[1.2rem] sm:rounded-[2.5rem] 
+          ${step === 0 ? 'p-6 sm:p-12 lg:p-20' : 'p-4 sm:p-10 lg:p-12'}
+          flex flex-col relative overflow-hidden`}>
           
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 space-y-12 animate-in fade-in duration-1000">
-              <div className="relative">
-                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[3px] border-[#E2E7EF] border-t-[#1D2889] animate-spin" />
-                 <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8 text-[#1D2889]/30" />
-              </div>
-              <div className="text-center space-y-4 max-w-xs sm:max-w-sm">
-                <h3 className="text-xl sm:text-2xl font-black text-[#050637] tracking-tight uppercase italic">Gerando Diagnóstico</h3>
-                <p className="text-sm sm:text-base text-[#444E68] font-medium leading-relaxed">Cruzando seus dados com nossa matriz de escala estratégica.</p>
-              </div>
-            </div>
-          ) : step === 0 ? (
-            <div className="space-y-10 sm:space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 flex flex-col items-center text-center">
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E2E7EF]/50 border border-[#E2E7EF] mb-2">
-                   <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#1D2889]" />
-                   <span className="text-[9px] sm:text-[10px] font-black text-[#1D2889] uppercase tracking-widest">Auditoria Exclusiva 2026</span>
+          <div className="flex-1 overflow-y-auto custom-scroll flex flex-col justify-center">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-8 animate-in fade-in duration-1000">
+                <div className="relative">
+                   <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-[3px] border-[#E2E7EF] border-t-[#1D2889] animate-spin" />
+                   <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 sm:h-8 sm:w-8 text-[#1D2889]/30" />
                 </div>
-                <img 
-                  src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" 
-                  alt="Reflex" 
-                  className="h-4 sm:h-8 mx-auto mb-6 sm:mb-10 opacity-90 transition-all duration-300" 
-                />
-                <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black text-[#050637] tracking-tighter leading-[1.1] sm:leading-[1.05] max-w-4xl mx-auto px-2">
-                  Descubra o Score de <span className="text-[#1D2889] italic">Escala Estratégica</span> do seu negócio.
-                </h1>
-                <p className="text-base sm:text-2xl text-[#444E68] font-medium max-w-2xl mx-auto leading-relaxed px-4">
-                  Receba um diagnóstico completo do seu funil e uma recomendação personalizada em menos de 3 minutos.
-                </p>
+                <div className="text-center space-y-2 max-w-xs sm:max-w-sm">
+                  <h3 className="text-lg sm:text-2xl font-black text-[#050637] tracking-tight uppercase italic">Gerando Diagnóstico</h3>
+                  <p className="text-xs sm:text-base text-[#444E68] font-medium leading-relaxed">Cruzando seus dados estrategicamente...</p>
+                </div>
               </div>
-
-              <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6 mt-4 px-4">
-                <div className="relative group">
-                  <User className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-[#899EC8] group-focus-within:text-[#1D2889] transition-colors h-4 w-4 sm:h-5 sm:w-5" />
-                  <input 
-                    type="text" 
-                    placeholder="Seu nome" 
-                    className="w-full pl-11 sm:pl-14 pr-4 sm:pr-6 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-[#E2E7EF]/20 border border-[#E2E7EF] text-[#050637] placeholder:text-[#899EC8] focus:ring-4 focus:ring-[#1D2889]/5 focus:border-[#1D2889] transition-all outline-none text-base sm:text-lg font-bold shadow-sm"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+            ) : step === 0 ? (
+              <div className="space-y-6 sm:space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 flex flex-col items-center text-center py-2">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E2E7EF]/50 border border-[#E2E7EF] mb-1">
+                     <ShieldCheck className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-[#1D2889]" />
+                     <span className="text-[8px] sm:text-[10px] font-black text-[#1D2889] uppercase tracking-widest">Auditoria Exclusiva 2026</span>
+                  </div>
+                  <img 
+                    src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" 
+                    alt="Reflex" 
+                    className="h-4 sm:h-7 mx-auto mb-4 opacity-90 transition-all duration-300" 
                   />
+                  <h1 className="text-2xl sm:text-5xl lg:text-7xl font-black text-[#050637] tracking-tighter leading-[1.1] max-w-4xl mx-auto px-1">
+                    Score de <span className="text-[#1D2889] italic">Escala Estratégica</span>
+                  </h1>
+                  <p className="text-sm sm:text-xl text-[#444E68] font-medium max-w-xl mx-auto leading-relaxed px-2">
+                    Receba um diagnóstico do seu funil e uma recomendação personalizada em menos de 3 minutos.
+                  </p>
+                </div>
+
+                <div className="w-full max-w-sm space-y-3 sm:space-y-4 px-2">
+                  <div className="relative group">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#899EC8] group-focus-within:text-[#1D2889] transition-colors h-4 w-4" />
+                    <input 
+                      type="text" 
+                      placeholder="Seu nome" 
+                      className="w-full pl-11 pr-4 py-3.5 sm:py-4 rounded-xl bg-[#E2E7EF]/20 border border-[#E2E7EF] text-[#050637] placeholder:text-[#899EC8] focus:ring-4 focus:ring-[#1D2889]/5 focus:border-[#1D2889] transition-all outline-none text-base font-bold shadow-sm"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    disabled={!name}
+                    onClick={handleNext}
+                    className="w-full bg-[#1D2889] hover:bg-[#12165F] disabled:opacity-30 text-white font-extrabold py-3.5 sm:py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg text-base sm:text-lg group active:scale-[0.98]"
+                  >
+                    Iniciar Diagnóstico <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-4 opacity-30 pt-4">
+                   <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" className="h-3 grayscale" alt="Logo" />
+                   <span className="text-[8px] font-black text-[#899EC8] uppercase tracking-widest">Reflex AC Intelligence</span>
+                </div>
+              </div>
+            ) : step <= 20 ? (
+              <div className="animate-in fade-in slide-in-from-right-8 duration-500 flex flex-col space-y-6 sm:space-y-8 py-2">
+                <div className="space-y-3 text-center">
+                  <span className="inline-block px-2 py-0.5 rounded-md bg-[#E2E7EF]/50 text-[8px] sm:text-[10px] font-black text-[#444E68] tracking-widest uppercase">
+                    Etapa {step} / 20
+                  </span>
+                  <h2 className="text-lg sm:text-3xl lg:text-4xl font-extrabold text-[#050637] tracking-tight leading-tight max-w-2xl mx-auto px-2">
+                    {QUESTIONS[step - 1].text}
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4 w-full max-w-3xl mx-auto px-1">
+                  {QUESTIONS[step - 1].options.map((option, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        const newAnswers = [...answers];
+                        newAnswers[step - 1] = idx;
+                        setAnswers(newAnswers);
+                        handleNext();
+                      }}
+                      className="group text-left p-4 sm:p-6 rounded-xl border border-[#E2E7EF] bg-white hover:border-[#3E5ABA] hover:bg-[#E2E7EF]/30 transition-all flex items-center justify-between active:scale-[0.98] shadow-sm min-h-[60px] sm:min-h-[85px]"
+                    >
+                      <span className="font-bold text-xs sm:text-base text-[#444E68] group-hover:text-[#050637] leading-tight pr-2">{option}</span>
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-[#E2E7EF] flex items-center justify-center group-hover:bg-[#3E5ABA] group-hover:border-[#3E5ABA] transition-all shrink-0">
+                         <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-[#899EC8] group-hover:text-white transition-colors" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex justify-center pt-2">
+                  <button onClick={handleBack} className="text-[9px] sm:text-xs font-black text-[#899EC8] hover:text-[#1D2889] uppercase tracking-widest transition-all px-4 py-1.5 border border-transparent hover:border-[#E2E7EF] rounded-full">
+                    Voltar
+                  </button>
+                </div>
+              </div>
+            ) : step === 21 ? (
+              <div className="text-center space-y-8 animate-in zoom-in-95 duration-700 py-6 flex flex-col items-center">
+                <div className="w-16 h-16 sm:w-24 bg-[#E2E7EF] rounded-xl flex items-center justify-center mb-1 relative">
+                   <div className="absolute inset-0 bg-[#3E5ABA]/10 blur-xl rounded-full"></div>
+                   <Rocket className="h-8 w-8 text-[#1D2889] relative z-10" />
+                </div>
+                <div className="space-y-3 px-4">
+                  <h2 className="text-2xl sm:text-5xl font-black text-[#050637] tracking-tighter uppercase leading-none">Finalizado.</h2>
+                  <p className="text-sm sm:text-xl text-[#444E68] font-medium max-w-xs mx-auto">
+                    Excelente, <span className="text-[#1D2889] font-bold">{name}</span>. Dados processados.
+                  </p>
                 </div>
                 <button 
-                  disabled={!name}
-                  onClick={handleNext}
-                  className="w-full bg-[#1D2889] hover:bg-[#12165F] disabled:opacity-30 text-white font-extrabold py-4 sm:py-5 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl shadow-[#1D2889]/10 hover:shadow-[#1D2889]/20 text-lg sm:text-xl group active:scale-[0.98]"
+                  onClick={handleComplete} 
+                  className="w-full max-w-[240px] bg-[#1D2889] text-white font-extrabold py-3.5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg text-base group active:scale-[0.98]"
                 >
-                  Iniciar Diagnóstico <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                  Ver Meu Score <Zap className="h-4 w-4 text-[#B98164] fill-[#B98164]" />
                 </button>
               </div>
-
-              <div className="flex items-center gap-4 sm:gap-6 opacity-40 pt-6 sm:pt-8">
-                 <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" className="h-3 sm:h-4 grayscale" alt="Logo" />
-                 <div className="h-3 sm:h-4 w-px bg-[#899EC8]"></div>
-                 <span className="text-[8px] sm:text-[10px] font-black text-[#899EC8] uppercase tracking-[0.2em] sm:tracking-[0.3em]">Reflex AC Intelligence</span>
-              </div>
-            </div>
-          ) : step <= 20 ? (
-            <div className="animate-in fade-in slide-in-from-right-8 duration-500 flex flex-col flex-1 justify-center space-y-8 sm:space-y-12">
-              <div className="space-y-4 sm:space-y-6 text-center">
-                <span className="inline-block px-3 py-1 rounded-md bg-[#E2E7EF]/50 text-[9px] sm:text-[10px] font-black text-[#444E68] tracking-widest uppercase mb-2">
-                  Etapa {step} / 20
-                </span>
-                <h2 className="text-xl sm:text-4xl lg:text-5xl font-extrabold text-[#050637] tracking-tight leading-[1.2] sm:leading-[1.15] max-w-3xl mx-auto px-4">
-                  {QUESTIONS[step - 1].text}
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 w-full max-w-4xl mx-auto px-2">
-                {QUESTIONS[step - 1].options.map((option, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      const newAnswers = [...answers];
-                      newAnswers[step - 1] = idx;
-                      setAnswers(newAnswers);
-                      handleNext();
-                    }}
-                    className="group text-left p-5 sm:p-8 rounded-xl sm:rounded-2xl border border-[#E2E7EF] bg-white hover:border-[#3E5ABA] hover:bg-[#E2E7EF]/30 transition-all flex items-center justify-between active:scale-[0.98] shadow-sm min-h-[70px] sm:min-h-[110px]"
-                  >
-                    <span className="font-bold text-sm sm:text-xl text-[#444E68] group-hover:text-[#050637] leading-snug pr-2">{option}</span>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-[#E2E7EF] flex items-center justify-center group-hover:bg-[#3E5ABA] group-hover:border-[#3E5ABA] transition-all shrink-0">
-                       <ArrowRight className="h-3.5 w-3.5 text-[#899EC8] group-hover:text-white transition-colors" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex justify-center pt-4 sm:pt-8">
-                <button onClick={handleBack} className="text-[10px] sm:text-xs font-black text-[#899EC8] hover:text-[#1D2889] uppercase tracking-widest transition-all px-6 py-2 border border-transparent hover:border-[#E2E7EF] rounded-full">
-                  Voltar
-                </button>
-              </div>
-            </div>
-          ) : step === 21 ? (
-            <div className="text-center space-y-10 sm:space-y-12 animate-in zoom-in-95 duration-700 py-12 flex flex-col items-center">
-              <div className="w-20 h-20 sm:w-32 sm:h-32 bg-[#E2E7EF] rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mb-2 relative">
-                 <div className="absolute inset-0 bg-[#3E5ABA]/10 blur-2xl rounded-full"></div>
-                 <Rocket className="h-10 w-10 sm:h-16 sm:w-16 text-[#1D2889] relative z-10" />
-              </div>
-              <div className="space-y-4 px-4">
-                <h2 className="text-3xl sm:text-6xl font-black text-[#050637] tracking-tighter uppercase leading-[0.9]">Finalizado.</h2>
-                <p className="text-base sm:text-2xl text-[#444E68] font-medium max-w-xl mx-auto leading-relaxed">
-                  Excelente, <span className="text-[#1D2889] font-bold">{name}</span>. Seus dados foram processados com sucesso.
-                </p>
-              </div>
-              <button 
-                onClick={handleComplete} 
-                className="w-full max-w-xs bg-[#1D2889] text-white font-extrabold py-5 sm:py-6 rounded-xl sm:rounded-2xl flex items-center justify-center gap-3 transition-all shadow-2xl hover:bg-[#12165F] text-lg sm:text-xl group active:scale-[0.98]"
-              >
-                Ver Meu Score <Zap className="h-5 w-5 text-[#B98164] fill-[#B98164]" />
-              </button>
-            </div>
-          ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-10 sm:space-y-16 py-4 sm:py-8">
-              
-              {/* Report Header */}
-              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-end justify-between border-b border-[#E2E7EF] pb-10 sm:pb-12">
-                 <div className="space-y-4 text-center lg:text-left flex-1">
-                    <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3.5 sm:h-5 mb-6 sm:mb-8 opacity-60 mx-auto lg:mx-0 transition-all duration-300" />
-                    <h2 className="text-3xl sm:text-6xl font-black text-[#050637] tracking-tighter uppercase leading-[0.95] sm:leading-[0.9]">Diagnóstico<br/>Estratégico</h2>
-                    <p className="text-[#899EC8] font-bold text-[10px] sm:text-sm tracking-widest uppercase">ID Auditoria: #{Math.floor(Math.random() * 999999)}</p>
-                 </div>
-                 
-                 <div className="relative group shrink-0">
-                    <div className="absolute inset-0 bg-[#3E5ABA]/5 blur-3xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative flex flex-col items-center">
-                       <span className="text-[7rem] sm:text-[13rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-[#1D2889] to-[#050637] leading-[0.8] tracking-tighter">
-                         {analysis?.score}
-                       </span>
-                       <span className="text-[#899EC8] font-extrabold text-lg sm:text-4xl mt-[-10px] sm:mt-[-20px]">PONTOS / 100</span>
-                    </div>
-                 </div>
-              </div>
-
-              {/* Insights Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
-                <div className="bg-[#E2E7EF]/20 p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[2.5rem] border border-[#E2E7EF] space-y-4 sm:space-y-6">
-                  <div className="flex items-center gap-3 sm:gap-4 mb-2">
-                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#1D2889] flex items-center justify-center text-white shadow-lg shadow-[#1D2889]/10">
-                        <Award className="h-4 w-4 sm:h-5 sm:w-5" />
-                     </div>
-                     <h3 className="text-[#050637] font-black text-lg sm:text-xl uppercase tracking-tight">O Veredito</h3>
-                  </div>
-                  <p className="text-sm sm:text-xl text-[#444E68] leading-relaxed font-bold">
-                    {analysis?.verdict}
-                  </p>
+            ) : (
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-8 sm:space-y-12 py-2">
+                
+                {/* Report Header */}
+                <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-center sm:items-end justify-between border-b border-[#E2E7EF] pb-8">
+                   <div className="space-y-3 text-center sm:text-left flex-1">
+                      <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3 sm:h-4 mb-4 opacity-50 mx-auto sm:mx-0" />
+                      <h2 className="text-2xl sm:text-4xl font-black text-[#050637] tracking-tighter uppercase leading-none">Diagnóstico<br/>Estratégico</h2>
+                      <p className="text-[#899EC8] font-bold text-[8px] sm:text-xs tracking-widest uppercase">Auditoria: #{Math.floor(Math.random() * 999999)}</p>
+                   </div>
+                   
+                   <div className="relative shrink-0">
+                      <div className="relative flex flex-col items-center">
+                         <span className="text-[6rem] sm:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-[#1D2889] to-[#050637] leading-[0.8] tracking-tighter">
+                           {analysis?.score}
+                         </span>
+                         <span className="text-[#899EC8] font-extrabold text-xs sm:text-xl mt-[-5px] sm:mt-[-10px]">PONTOS / 100</span>
+                      </div>
+                   </div>
                 </div>
 
-                <div className="bg-[#E2E7EF]/20 p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[2.5rem] border border-[#E2E7EF] space-y-4 sm:space-y-6">
-                  <div className="flex items-center gap-3 sm:gap-4 mb-2">
-                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#B98164] flex items-center justify-center text-white shadow-lg shadow-[#B98164]/10">
-                        <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
-                     </div>
-                     <h3 className="text-[#050637] font-black text-lg sm:text-xl uppercase tracking-tight">Próximos Passos</h3>
+                {/* Insights Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-8 rounded-xl sm:rounded-2xl border border-[#E2E7EF] space-y-3">
+                    <div className="flex items-center gap-3">
+                       <Award className="h-4 w-4 text-[#1D2889]" />
+                       <h3 className="text-[#050637] font-black text-xs sm:text-sm uppercase tracking-tight">O Veredito</h3>
+                    </div>
+                    <p className="text-xs sm:text-base text-[#444E68] leading-snug font-bold">
+                      {analysis?.verdict}
+                    </p>
                   </div>
-                  <p className="text-sm sm:text-xl text-[#444E68] leading-relaxed font-bold">
-                    {analysis?.recommendation}
-                  </p>
+
+                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-8 rounded-xl sm:rounded-2xl border border-[#E2E7EF] space-y-3">
+                    <div className="flex items-center gap-3">
+                       <TrendingUp className="h-4 w-4 text-[#B98164]" />
+                       <h3 className="text-[#050637] font-black text-xs sm:text-sm uppercase tracking-tight">Próximos Passos</h3>
+                    </div>
+                    <p className="text-xs sm:text-base text-[#444E68] leading-snug font-bold">
+                      {analysis?.recommendation}
+                    </p>
+                  </div>
+                </div>
+
+                {/* CTA Box */}
+                <div className="relative bg-[#050637] p-6 sm:p-10 rounded-2xl text-center space-y-6 shadow-xl overflow-hidden group">
+                   <div className="space-y-3 relative z-10 max-w-2xl mx-auto">
+                     <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-[#899EC8] text-[7px] sm:text-[9px] font-black uppercase tracking-widest">
+                        <Target className="w-2.5 h-2.5" /> Foco em Resultados
+                     </div>
+                     <h3 className="text-xl sm:text-4xl font-black text-white tracking-tighter leading-tight">
+                       Escalar seu faturamento?
+                     </h3>
+                     <p className="text-[#E2E7EF]/60 text-xs sm:text-base font-medium">
+                       Agende uma sessão estratégica gratuita para desenharmos seu novo funil.
+                     </p>
+                   </div>
+
+                   <div className="flex flex-col gap-4 items-center relative z-10">
+                     <button 
+                       onClick={sendEmailNotification}
+                       disabled={isSending}
+                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 sm:gap-4 bg-[#3E5ABA] text-white font-black px-6 py-3.5 sm:py-4 rounded-xl hover:bg-[#1D2889] hover:scale-[1.02] transition-all shadow-lg text-[10px] sm:text-lg whitespace-nowrap uppercase tracking-tight"
+                     >
+                       {isSending ? (
+                         <Loader2 className="h-4 w-4 animate-spin" />
+                       ) : (
+                         <>AGENDAR MINHA ASESSORIA GRATUITA <Calendar className="h-3.5 w-3.5 sm:h-5 sm:w-5" /></>
+                       )}
+                     </button>
+                     <div className="flex items-center justify-center gap-3 text-[#899EC8]/40 text-[7px] sm:text-[9px] font-black uppercase tracking-widest">
+                       <span className="flex items-center gap-1.5"><CheckCircle2 className="h-2.5 w-2.5 text-[#B98164]" /> Vagas Limitadas</span>
+                       <span>•</span>
+                       <span>JANEIRO 2026</span>
+                     </div>
+                   </div>
+                </div>
+
+                <div className="text-center pt-4 border-t border-[#E2E7EF]">
+                  <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-[#1D2889] transition-colors text-[10px] sm:text-xs group px-4 py-2 rounded-full hover:bg-[#E2E7EF]/20">
+                    <Globe className="h-3.5 w-3.5" /> Ver estudos de caso <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
-
-              {/* High Impact CTA - Optimized for Mobile */}
-              <div className="relative bg-[#050637] p-6 sm:p-16 lg:p-20 rounded-[2rem] sm:rounded-[3.5rem] text-center space-y-8 sm:space-y-10 shadow-2xl overflow-hidden group">
-                 <div className="absolute top-[-20%] right-[-10%] opacity-[0.03] pointer-events-none group-hover:translate-x-[-20px] transition-transform duration-1000 rotate-12 scale-110">
-                    <Zap className="h-[300px] sm:h-[500px] w-[300px] sm:w-[500px] text-white" />
-                 </div>
-                 
-                 <div className="space-y-4 sm:space-y-6 relative z-10 max-w-3xl mx-auto px-2">
-                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-[#899EC8] text-[8px] sm:text-[10px] font-black uppercase tracking-widest mb-2">
-                      <Target className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Foco em Resultados Reais
-                   </div>
-                   <h3 className="text-2xl sm:text-7xl font-black text-white tracking-tighter leading-[1.1] sm:leading-[1.05]">
-                     Pronto para escalar seu faturamento?
-                   </h3>
-                   <p className="text-[#E2E7EF]/60 text-sm sm:text-2xl font-medium leading-relaxed">
-                     Agende uma sessão estratégica individual gratuita para desenharmos seu novo funil de alta conversão.
-                   </p>
-                 </div>
-
-                 <div className="flex flex-col gap-6 sm:gap-8 items-center relative z-10 px-2">
-                   <button 
-                     onClick={sendEmailNotification}
-                     disabled={isSending}
-                     className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-6 bg-[#3E5ABA] text-white font-black px-4 sm:px-16 py-4 sm:py-6 rounded-xl sm:rounded-2xl hover:bg-[#1D2889] hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-[#3E5ABA]/20 text-xs sm:text-2xl whitespace-nowrap overflow-hidden"
-                   >
-                     {isSending ? (
-                       <Loader2 className="h-5 w-5 sm:h-8 sm:w-8 animate-spin" />
-                     ) : (
-                       <>
-                        <span className="truncate">AGENDAR MINHA ASESSORIA GRATUITA</span> 
-                        <Calendar className="h-4 w-4 sm:h-7 sm:w-7 shrink-0" />
-                       </>
-                     )}
-                   </button>
-                   <div className="flex items-center justify-center gap-3 sm:gap-6 text-[#899EC8]/40 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em]">
-                     <span className="flex items-center gap-1.5 sm:gap-2 shrink-0"><CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-[#B98164]" /> Vagas Limitadas</span>
-                     <div className="h-1 w-1 bg-[#444E68] rounded-full shrink-0"></div>
-                     <span className="shrink-0">JANEIRO 2026</span>
-                   </div>
-                 </div>
-              </div>
-
-              <div className="text-center pt-6 sm:pt-8 border-t border-[#E2E7EF] px-4">
-                <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-[#1D2889] transition-colors text-sm sm:text-base group px-6 py-3 rounded-full hover:bg-[#E2E7EF]/20">
-                  <Globe className="h-4 w-4 sm:h-5 sm:w-5" /> Ver estudos de caso <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         
-        {/* Footer branding */}
-        <div className="mt-8 sm:mt-12 opacity-40 flex items-center gap-4 animate-in fade-in duration-1000 px-4 text-center">
-          <span className="text-[8px] sm:text-[10px] font-black text-[#686A86] tracking-[0.2em] sm:tracking-[0.3em] uppercase">Built with KN Growth</span>
-          <div className="h-3 sm:h-4 w-px bg-[#E2E7EF]"></div>
-          <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3 sm:h-4 grayscale" />
+        {/* Fixed Footer branding to save space */}
+        <div className="mt-4 opacity-40 flex items-center gap-3 text-[7px] sm:text-[9px]">
+          <span className="font-black text-[#686A86] tracking-widest uppercase">Built with KN Growth</span>
+          <div className="h-3 w-px bg-[#E2E7EF]"></div>
+          <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-2.5 grayscale" />
         </div>
       </main>
     </div>
