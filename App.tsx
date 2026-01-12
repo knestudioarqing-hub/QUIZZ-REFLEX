@@ -87,7 +87,12 @@ const App: React.FC = () => {
 
   const calculateResults = (): QuizAnalysis => {
     const pointsMap = [5, 3, 1, 0];
-    const totalScore = answers.reduce((acc, curr) => acc + pointsMap[curr], 0);
+    // Calcula el puntaje real basado en las respuestas
+    let rawScore = answers.reduce((acc, curr) => acc + pointsMap[curr], 0);
+    
+    // CAP: Limita el puntaje máximo a 85.
+    // Si rawScore es mayor a 85, se queda en 85.
+    const totalScore = Math.min(rawScore, 85);
     
     if (totalScore >= 85) {
       return {
@@ -168,7 +173,7 @@ const App: React.FC = () => {
         <div className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-[#899EC8]/10 rounded-full blur-[100px] opacity-30"></div>
       </div>
 
-      <div className={`min-h-full w-full flex flex-col items-center justify-center relative z-10 p-2 sm:p-6`}>
+      <div className={`min-h-full w-full flex flex-col items-center justify-center relative z-10 ${step === 22 ? 'p-3 sm:p-6' : 'p-2 sm:p-6'}`}>
         <main className={`w-full max-w-7xl flex flex-col items-center justify-center h-full ${step === 22 ? 'py-0 sm:py-8' : 'py-2 sm:py-8'}`}>
           
           {/* Progress Tracker - Hidden on final step */}
@@ -335,14 +340,19 @@ const App: React.FC = () => {
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 w-full h-full flex flex-col">
                   
-                  {/* Minimal Top Header - HIDDEN ON MOBILE STEP 22 FOR SPACE */}
+                  {/* Minimal Top Header - Desktop Only */}
                   <div className="hidden lg:flex flex-col items-center justify-center text-center pb-8 lg:pb-14">
                      <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3 sm:h-4 opacity-40 mb-1" />
                      <h2 className="text-[7px] sm:text-[10px] font-black text-[#899EC8] tracking-[0.4em] uppercase opacity-60">Auditoria Reflex AC Intelligence</h2>
                   </div>
 
+                  {/* NEW: Mobile Header (Logo on white) - Visible only on mobile, placed above the blue card */}
+                  <div className="lg:hidden w-full flex justify-center pb-4 pt-2">
+                     <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-4 opacity-100" />
+                  </div>
+
                   {/* CONSOLIDATED HERO CTA AREA - ALL-IN-ONE DIAGNOSTIC BLOCK */}
-                  <div className="relative bg-[#050637] rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden mx-0 sm:mx-2 border border-white/5 w-full flex-1 flex flex-col justify-between p-0 sm:p-12 lg:p-16">
+                  <div className="relative bg-[#050637] rounded-[2rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden mx-0 sm:mx-2 border border-white/5 w-full flex-1 flex flex-col justify-between p-0 sm:p-12 lg:p-16">
                      {/* Strategic Background Aura */}
                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[60%] bg-gradient-to-b from-[#1D2889]/30 to-transparent pointer-events-none"></div>
                      
@@ -351,24 +361,24 @@ const App: React.FC = () => {
                          This block renders nicely on LG screens
                      */}
                      <div className="hidden lg:grid relative z-10 grid-cols-12 gap-16 items-center">
-                        <div className="col-span-5 flex flex-col items-center justify-center text-center">
-                            <div className="animate-in zoom-in duration-1000 relative">
+                        <div className="col-span-5 flex flex-col items-start justify-center text-left">
+                            <div className="animate-in zoom-in duration-1000 relative inline-block">
                                 <span className="text-[11rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#899EC8] leading-none tracking-tighter block drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                                 {analysis?.score}
                                 </span>
-                                <div className="absolute -right-4 top-10 rotate-12 bg-[#3E5ABA] text-white text-sm font-bold px-2 py-1 rounded-md border border-white/20 shadow-lg">
+                                <div className="absolute -right-8 top-10 rotate-12 bg-[#3E5ABA] text-white text-sm font-bold px-2 py-1 rounded-md border border-white/20 shadow-lg whitespace-nowrap">
                                     Nível Atual
                                 </div>
                             </div>
-                            <span className="text-[#899EC8] font-extrabold text-xl uppercase tracking-[0.4em] sm:-mt-2 opacity-90 mb-8">
+                            <span className="text-[#899EC8] font-extrabold text-xl uppercase tracking-[0.4em] sm:-mt-2 opacity-90 mb-8 ml-2">
                             PONTOS / 100
                             </span>
 
-                            <div className="flex flex-col items-center space-y-4">
+                            <div className="flex flex-col items-start space-y-4">
                                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#899EC8] text-xs font-black uppercase tracking-[0.4em]">
                                     <Target className="w-4" /> Escala Imediata
                                 </div>
-                                <h3 className="text-3xl font-black text-white tracking-tighter leading-tight text-center">
+                                <h3 className="text-3xl font-black text-white tracking-tighter leading-tight text-left">
                                     Pronto para escalar?
                                 </h3>
                                 <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-sm group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 mt-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
@@ -425,13 +435,11 @@ const App: React.FC = () => {
                          MOBILE LAYOUT - RE-ENGINEERED FOR PROFESSIONAL HIERARCHY
                          Clean, Spacious, No Scroll, Perfect Fit
                      */}
-                     <div className="lg:hidden flex flex-col h-full justify-between relative z-10 px-6 pt-6 pb-8">
+                     <div className="lg:hidden flex flex-col h-full justify-between relative z-10 px-5 pt-5 pb-5">
                         
                         {/* 1. Header & Score - Minimalist & Premium */}
                         <div className="flex flex-col items-center justify-center shrink-0 space-y-2">
-                           <div className="flex items-center gap-2 opacity-50 mb-2">
-                             <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3" />
-                           </div>
+                           {/* LOGO REMOVED FROM HERE */}
                            
                            <div className="relative">
                                 {/* Score Number */}
