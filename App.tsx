@@ -372,8 +372,8 @@ const App: React.FC = () => {
                                 <h3 className="text-xl lg:text-3xl font-black text-white tracking-tighter leading-tight text-center">
                                     Pronto para escalar?
                                 </h3>
-                                <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-white transition-colors text-[10px] lg:text-xs group px-4 py-2 rounded-full hover:bg-white/10 mt-1">
-                                  <Globe className="h-3 w-3" /> Estudos de Caso Reflex AC <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-xs lg:text-sm group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 mt-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+                                  <Globe className="h-4 w-4" /> Estudos de Caso Reflex AC <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </a>
                             </div>
                         </div>
@@ -436,8 +436,8 @@ const App: React.FC = () => {
                         <h3 className="text-xl font-black text-white tracking-tighter leading-tight">
                           Pronto para escalar seu faturamento?
                         </h3>
-                        <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-white transition-colors text-[10px] group px-4 py-2 rounded-full hover:bg-white/10">
-                           <Globe className="h-3 w-3" /> Estudos de Caso Reflex AC <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-xs group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                           <Globe className="h-4 w-4" /> Estudos de Caso Reflex AC <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                          </a>
                         <p className="text-[#E2E7EF]/70 text-sm font-medium leading-relaxed max-w-2xl mx-auto">
                           Seu score indica gargalos. Agende agora uma sessão estratégica gratuita para desenharmos seu novo funil.
