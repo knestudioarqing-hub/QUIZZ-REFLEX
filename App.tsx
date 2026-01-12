@@ -161,17 +161,17 @@ const App: React.FC = () => {
   }, [step]);
 
   return (
-    <div className="h-screen w-screen overflow-y-auto bg-[#fbfbfd] selection:bg-[#3E5ABA]/20 selection:text-[#050637] relative">
+    <div className={`h-screen w-screen bg-[#fbfbfd] selection:bg-[#3E5ABA]/20 selection:text-[#050637] relative ${step === 22 ? 'overflow-hidden' : 'overflow-y-auto'}`}>
       {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-[60vw] h-[60vw] bg-[#E2E7EF] rounded-full blur-[120px] opacity-40"></div>
         <div className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-[#899EC8]/10 rounded-full blur-[100px] opacity-30"></div>
       </div>
 
-      <div className="min-h-full w-full flex flex-col items-center justify-center p-2 sm:p-6 relative z-10">
-        <main className="w-full max-w-7xl flex flex-col items-center justify-center py-4 sm:py-8">
+      <div className={`min-h-full w-full flex flex-col items-center justify-center relative z-10 p-2 sm:p-6`}>
+        <main className={`w-full max-w-7xl flex flex-col items-center justify-center h-full ${step === 22 ? 'py-0 sm:py-8' : 'py-2 sm:py-8'}`}>
           
-          {/* Progress Tracker */}
+          {/* Progress Tracker - Hidden on final step */}
           {step > 0 && step <= 20 && (
             <div className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-500 pointer-events-none">
               <div className="bg-white/90 backdrop-blur-md border border-[#E2E7EF] rounded-full px-4 sm:px-6 py-1.5 sm:py-2.5 shadow-sm flex items-center gap-3 sm:gap-4 pointer-events-auto">
@@ -186,14 +186,12 @@ const App: React.FC = () => {
 
           <div className={`w-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] 
             ${step === 22 
-              ? 'max-w-7xl bg-transparent shadow-none' 
-              : `bg-white border border-[#E2E7EF] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.03)] ${step === 0 ? 'max-w-6xl' : 'max-w-4xl'}`
+              ? 'max-w-7xl bg-transparent shadow-none h-full' 
+              : `bg-white border border-[#E2E7EF] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.03)] ${step === 0 ? 'max-w-6xl' : 'max-w-4xl'} rounded-[1.25rem] sm:rounded-[2.5rem] ${step === 0 ? 'p-6 sm:p-12 lg:p-16' : 'p-3 sm:p-6 lg:p-10'}`
             }
-            rounded-[1.25rem] sm:rounded-[2.5rem] 
-            ${step === 22 ? 'p-0' : step === 0 ? 'p-6 sm:p-12 lg:p-16' : 'p-3 sm:p-6 lg:p-10'}
             flex flex-col relative`}>
             
-            <div className="flex flex-col justify-center py-1">
+            <div className={`flex flex-col justify-center ${step === 22 ? 'h-full' : 'py-1'}`}>
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-10 space-y-10 animate-in fade-in duration-1000">
                   <div className="relative">
@@ -335,80 +333,76 @@ const App: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-2 sm:space-y-4 py-1 w-full">
+                <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 w-full h-full flex flex-col">
                   
-                  {/* Minimal Top Header - PADDING ADJUSTED */}
-                  <div className="flex flex-col items-center justify-center text-center pb-8 lg:pb-14">
+                  {/* Minimal Top Header - HIDDEN ON MOBILE STEP 22 FOR SPACE */}
+                  <div className="hidden lg:flex flex-col items-center justify-center text-center pb-8 lg:pb-14">
                      <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3 sm:h-4 opacity-40 mb-1" />
                      <h2 className="text-[7px] sm:text-[10px] font-black text-[#899EC8] tracking-[0.4em] uppercase opacity-60">Auditoria Reflex AC Intelligence</h2>
                   </div>
 
                   {/* CONSOLIDATED HERO CTA AREA - ALL-IN-ONE DIAGNOSTIC BLOCK */}
-                  <div className="relative bg-[#050637] p-6 sm:p-12 lg:p-16 rounded-[2rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden mx-1 sm:mx-2 border border-white/5 w-full">
+                  <div className="relative bg-[#050637] rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden mx-0 sm:mx-2 border border-white/5 w-full flex-1 flex flex-col justify-between p-0 sm:p-12 lg:p-16">
                      {/* Strategic Background Aura */}
                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[60%] bg-gradient-to-b from-[#1D2889]/30 to-transparent pointer-events-none"></div>
                      
-                     {/* DESKTOP LAYOUT GRID */}
-                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-                        
-                        {/* LEFT COLUMN: SCORE (Ancla Visual) */}
-                        <div className="lg:col-span-5 flex flex-col items-center lg:items-center justify-center text-center">
+                     {/* 
+                         DESKTOP LAYOUT (Default behavior hidden on mobile) 
+                         This block renders nicely on LG screens
+                     */}
+                     <div className="hidden lg:grid relative z-10 grid-cols-12 gap-16 items-center">
+                        <div className="col-span-5 flex flex-col items-center justify-center text-center">
                             <div className="animate-in zoom-in duration-1000 relative">
-                                <span className="text-[5rem] sm:text-[8rem] lg:text-[11rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#899EC8] leading-none tracking-tighter block drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                                <span className="text-[11rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#899EC8] leading-none tracking-tighter block drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                                 {analysis?.score}
                                 </span>
-                                <div className="absolute -right-4 top-4 lg:top-10 rotate-12 bg-[#3E5ABA] text-white text-[10px] lg:text-sm font-bold px-2 py-1 rounded-md border border-white/20 shadow-lg">
+                                <div className="absolute -right-4 top-10 rotate-12 bg-[#3E5ABA] text-white text-sm font-bold px-2 py-1 rounded-md border border-white/20 shadow-lg">
                                     Nível Atual
                                 </div>
                             </div>
-                            <span className="text-[#899EC8] font-extrabold text-[9px] sm:text-xl uppercase tracking-[0.4em] sm:-mt-2 opacity-90 mb-4 lg:mb-8">
+                            <span className="text-[#899EC8] font-extrabold text-xl uppercase tracking-[0.4em] sm:-mt-2 opacity-90 mb-8">
                             PONTOS / 100
                             </span>
 
-                            <div className="hidden lg:flex flex-col items-center space-y-4">
-                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#899EC8] text-[8px] sm:text-xs font-black uppercase tracking-[0.4em]">
-                                    <Target className="w-3 h-3 sm:w-4" /> Escala Imediata
+                            <div className="flex flex-col items-center space-y-4">
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#899EC8] text-xs font-black uppercase tracking-[0.4em]">
+                                    <Target className="w-4" /> Escala Imediata
                                 </div>
-                                <h3 className="text-xl lg:text-3xl font-black text-white tracking-tighter leading-tight text-center">
+                                <h3 className="text-3xl font-black text-white tracking-tighter leading-tight text-center">
                                     Pronto para escalar?
                                 </h3>
-                                <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-xs lg:text-sm group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 mt-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+                                <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-sm group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 mt-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
                                   <Globe className="h-4 w-4" /> Estudos de Caso Reflex AC <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </a>
                             </div>
                         </div>
 
-                        {/* RIGHT COLUMN: DIAGNOSIS & CTA */}
-                        <div className="lg:col-span-7 space-y-6 lg:space-y-8">
-                             {/* Cards de Diagnostico */}
-                             <div className="grid grid-cols-1 gap-4 lg:gap-6">
-                                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 lg:p-8 rounded-[1.25rem] lg:rounded-[2rem] space-y-3 group hover:bg-white/10 transition-colors">
+                        <div className="col-span-7 space-y-8">
+                             <div className="grid grid-cols-1 gap-6">
+                                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] space-y-3 group hover:bg-white/10 transition-colors">
                                     <div className="flex items-center gap-2 opacity-60">
                                         <Award className="h-4 w-4 text-white" />
                                         <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em]">O Veredito</h3>
                                     </div>
-                                    <p className="text-white text-lg lg:text-2xl font-bold leading-tight">
+                                    <p className="text-white text-2xl font-bold leading-tight">
                                         {analysis?.verdict}
                                     </p>
                                 </div>
-
-                                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 lg:p-8 rounded-[1.25rem] lg:rounded-[2rem] space-y-3 group hover:bg-white/10 transition-colors">
+                                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] space-y-3 group hover:bg-white/10 transition-colors">
                                     <div className="flex items-center gap-2 opacity-60">
                                         <TrendingUp className="h-4 w-4 text-[#B98164]" />
                                         <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em]">Próximos Passos</h3>
                                     </div>
-                                    <p className="text-white text-lg lg:text-2xl font-bold leading-tight">
+                                    <p className="text-white text-2xl font-bold leading-tight">
                                         {analysis?.recommendation}
                                     </p>
                                 </div>
                              </div>
-
-                             {/* Botón CTA (Visible en Desktop aquí abajo) */}
-                             <div className="pt-4 lg:pt-2">
+                             <div className="pt-2">
                                 <button 
                                 onClick={sendEmailNotification}
                                 disabled={isSending}
-                                className="w-full inline-flex items-center justify-center gap-4 bg-[#3E5ABA] text-white font-black px-8 py-6 rounded-xl lg:rounded-2xl hover:bg-[#1D2889] hover:scale-[1.01] active:scale-95 transition-all shadow-[0_15px_30px_-10px_rgba(62,90,186,0.5)] text-lg lg:text-2xl uppercase tracking-tight"
+                                className="w-full inline-flex items-center justify-center gap-4 bg-[#3E5ABA] text-white font-black px-8 py-6 rounded-2xl hover:bg-[#1D2889] hover:scale-[1.01] active:scale-95 transition-all shadow-[0_15px_30px_-10px_rgba(62,90,186,0.5)] text-2xl uppercase tracking-tight"
                                 >
                                 {isSending ? (
                                     <Loader2 className="h-6 w-6 animate-spin" />
@@ -425,23 +419,90 @@ const App: React.FC = () => {
                                 </div>
                              </div>
                         </div>
-
                      </div>
-                     
-                     {/* MOBILE ONLY TEXT (Oculto en Desktop ya que se movió a la izquierda) */}
-                     <div className="lg:hidden space-y-4 pt-8 text-center flex flex-col items-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#899EC8] text-[8px] font-black uppercase tracking-[0.4em]">
-                            <Target className="w-3 h-3" /> Escala Imediata
+
+                     {/* 
+                         MOBILE LAYOUT - RE-ENGINEERED FOR PROFESSIONAL HIERARCHY
+                         Clean, Spacious, No Scroll, Perfect Fit
+                     */}
+                     <div className="lg:hidden flex flex-col h-full justify-between relative z-10 px-6 pt-6 pb-8">
+                        
+                        {/* 1. Header & Score - Minimalist & Premium */}
+                        <div className="flex flex-col items-center justify-center shrink-0 space-y-2">
+                           <div className="flex items-center gap-2 opacity-50 mb-2">
+                             <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3" />
+                           </div>
+                           
+                           <div className="relative">
+                                {/* Score Number */}
+                                <span className="text-[7rem] leading-none font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#899EC8]/80 tracking-tighter drop-shadow-2xl">
+                                {analysis?.score}
+                                </span>
+                                {/* Badge */}
+                                <div className="absolute -right-2 top-4 rotate-12 bg-[#3E5ABA] text-white text-[9px] font-black px-2 py-0.5 rounded border border-white/20 shadow-lg uppercase tracking-wider">
+                                    Nível Atual
+                                </div>
+                            </div>
+                            <span className="text-[#899EC8] font-black text-[10px] uppercase tracking-[0.4em] opacity-70">
+                                Pontuação Geral
+                            </span>
                         </div>
-                        <h3 className="text-xl font-black text-white tracking-tighter leading-tight">
-                          Pronto para escalar seu faturamento?
-                        </h3>
-                        <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-white font-bold hover:text-white transition-all text-xs group px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 hover:border-white/30 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-                           <Globe className="h-4 w-4" /> Estudos de Caso Reflex AC <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                         </a>
-                        <p className="text-[#E2E7EF]/70 text-sm font-medium leading-relaxed max-w-2xl mx-auto">
-                          Seu score indica gargalos. Agende agora uma sessão estratégica gratuita para desenharmos seu novo funil.
-                        </p>
+
+                        {/* 2. Insight Cards - Glassmorphism, Clean, Professional */}
+                        <div className="flex-1 flex flex-col justify-center gap-3 min-h-0 py-4">
+                             {/* Verdict Card */}
+                             <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col gap-2 relative overflow-hidden group">
+                                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                 <div className="flex items-center gap-2 opacity-60">
+                                     <Award className="h-3 w-3 text-[#3E5ABA]" />
+                                     <h3 className="text-white/80 font-black text-[9px] uppercase tracking-[0.2em]">O Veredito</h3>
+                                 </div>
+                                 <p className="text-white text-sm font-bold leading-snug">
+                                     {analysis?.verdict}
+                                 </p>
+                             </div>
+
+                             {/* Steps Card */}
+                             <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col gap-2 relative overflow-hidden group">
+                                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                 <div className="flex items-center gap-2 opacity-60">
+                                     <Target className="h-3 w-3 text-[#B98164]" />
+                                     <h3 className="text-white/80 font-black text-[9px] uppercase tracking-[0.2em]">Ação Estratégica</h3>
+                                 </div>
+                                 <p className="text-white text-sm font-medium leading-snug opacity-90">
+                                     {analysis?.recommendation}
+                                 </p>
+                             </div>
+                        </div>
+
+                        {/* 3. Primary Actions - High Contrast & Hierarchy */}
+                        <div className="shrink-0 space-y-3">
+                             <button 
+                                onClick={sendEmailNotification}
+                                disabled={isSending}
+                                className="w-full inline-flex items-center justify-center gap-3 bg-[#3E5ABA] text-white font-black px-4 py-4 rounded-2xl hover:bg-[#1D2889] active:scale-[0.98] transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-sm uppercase tracking-tight relative overflow-hidden"
+                                >
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+                                {isSending ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    <>
+                                    <span>Agendar Assessoria Gratuita</span> 
+                                    <Calendar className="h-4 w-4 shrink-0 opacity-80" />
+                                    </>
+                                )}
+                             </button>
+                             
+                             <div className="flex flex-col items-center justify-center gap-3">
+                                <a href="https://reflexbr.com/home-2688" target="_blank" className="text-white/60 hover:text-white font-bold transition-all text-[11px] group flex items-center gap-2 py-2">
+                                   <Globe className="h-3 w-3" /> Ver Estudos de Caso Reflex AC <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
+                                </a>
+                                <div className="flex items-center justify-center gap-3 text-[#899EC8]/30 text-[9px] font-black uppercase tracking-widest">
+                                    <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"/> Vagas Limitadas</span>
+                                    <span>Jan 2026</span>
+                                </div>
+                             </div>
+                        </div>
                      </div>
 
                   </div>
@@ -450,12 +511,14 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          {/* Footer branding */}
-          <div className="mt-3 sm:mt-6 opacity-25 flex items-center gap-3 text-[8px] sm:text-[10px] px-4">
-            <span className="font-black text-[#686A86] tracking-widest uppercase">Built with KN Growth</span>
-            <div className="h-3 w-px bg-[#E2E7EF]"></div>
-            <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-2.5 sm:h-4 grayscale" />
-          </div>
+          {/* Footer branding - HIDDEN ON STEP 22 TO SAVE SPACE */}
+          {step !== 22 && (
+            <div className="mt-3 sm:mt-6 opacity-25 flex items-center gap-3 text-[8px] sm:text-[10px] px-4">
+                <span className="font-black text-[#686A86] tracking-widest uppercase">Built with KN Growth</span>
+                <div className="h-3 w-px bg-[#E2E7EF]"></div>
+                <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-2.5 sm:h-4 grayscale" />
+            </div>
+          )}
         </main>
       </div>
     </div>
