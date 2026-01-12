@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { QuizAnalysis } from './types.ts';
 import { 
   ChevronRight, 
@@ -48,9 +48,46 @@ const App: React.FC = () => {
   const [name, setName] = useState('');
   const [answers, setAnswers] = useState<number[]>([]);
   const [analysis, setAnalysis] = useState<QuizAnalysis | null>(null);
+  
+  // Track notifications to avoid double sending
+  const sentCheckpoints = useRef<Set<number>>(new Set());
 
   const handleNext = () => setStep(prev => prev + 1);
   const handleBack = () => setStep(prev => Math.max(0, prev - 1));
+
+  const sendProgressNotification = async (percentage: number) => {
+    const targetEmail = 'contacto.kngrowth@gmail.com';
+    const payload = {
+      _subject: `⚡ QUIZ PROGRESSO [${percentage}%] - LEAD: ${name}`,
+      Nome: name,
+      Progresso: `${percentage}%`,
+      Mensagem: `O lead ${name} acabou de atingir ${percentage}% do quiz de diagnóstico.`,
+      _captcha: 'false'
+    };
+
+    try {
+      await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      console.log(`Notification sent for ${percentage}%`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Watch for progress milestones
+  useEffect(() => {
+    if (step === 9 && !sentCheckpoints.current.has(9)) {
+      sentCheckpoints.current.add(9);
+      sendProgressNotification(45);
+    }
+    if (step === 16 && !sentCheckpoints.current.has(16)) {
+      sentCheckpoints.current.add(16);
+      sendProgressNotification(80);
+    }
+  }, [step]);
 
   const calculateResults = (): QuizAnalysis => {
     const pointsMap = [5, 3, 1, 0];
@@ -97,7 +134,7 @@ const App: React.FC = () => {
     setIsSending(true);
     const targetEmail = 'contacto.kngrowth@gmail.com';
     const payload = {
-      _subject: `🔥 QUIZ 20P - LEAD: ${name} (${analysis?.score}%)`,
+      _subject: `🔥 QUIZ COMPLETO - LEAD: ${name} (${analysis?.score}%)`,
       Nome: name,
       Score: `${analysis?.score}/100`,
       Veredicto: analysis?.verdict,
@@ -153,19 +190,19 @@ const App: React.FC = () => {
         <div className={`w-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] 
           ${step === 22 ? 'max-w-6xl h-full lg:h-auto max-h-[96vh]' : 'max-w-4xl max-h-[85vh] h-auto'}
           bg-white border border-[#E2E7EF] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.03)] rounded-[1.5rem] sm:rounded-[2.5rem] 
-          ${step === 0 ? 'p-6 sm:p-16 lg:p-24' : 'p-4 sm:p-12 lg:p-14'}
+          ${step === 0 ? 'p-6 sm:p-16 lg:p-24' : 'p-4 sm:p-10 lg:p-12'}
           flex flex-col relative overflow-hidden`}>
           
-          <div className="flex-1 overflow-y-auto custom-scroll flex flex-col justify-center">
+          <div className="flex-1 overflow-y-auto custom-scroll flex flex-col justify-center py-2">
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 space-y-10 animate-in fade-in duration-1000">
+              <div className="flex flex-col items-center justify-center py-10 space-y-10 animate-in fade-in duration-1000">
                 <div className="relative">
                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[3px] border-[#E2E7EF] border-t-[#1D2889] animate-spin" />
                    <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8 text-[#1D2889]/30" />
                 </div>
                 <div className="text-center space-y-4 max-w-sm px-4">
                   <h3 className="text-xl sm:text-2xl font-black text-[#050637] tracking-tight uppercase italic">Gerando Diagnóstico</h3>
-                  <p className="text-sm sm:text-base text-[#444E68] font-medium leading-relaxed">Cruzando seus dados com nossa matriz de escala estratégica.</p>
+                  <p className="text-sm sm:text-base text-[#444E68] font-medium leading-relaxed">Cruzando seus dados estrategicamente.</p>
                 </div>
               </div>
             ) : step === 0 ? (
@@ -178,7 +215,7 @@ const App: React.FC = () => {
                   <img 
                     src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" 
                     alt="Reflex" 
-                    className="h-4 sm:h-8 mx-auto mb-4 sm:mb-10 opacity-90 transition-all duration-300" 
+                    className="h-4 sm:h-8 mx-auto mb-4 opacity-90 transition-all duration-300" 
                   />
                   <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black text-[#050637] tracking-tighter leading-[1.1] sm:leading-[1.05] max-w-4xl mx-auto px-1">
                     Score de <span className="text-[#1D2889] italic">Escala Estratégica</span>
@@ -188,13 +225,13 @@ const App: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6 mt-2 sm:mt-4 px-4">
+                <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6 mt-2 px-4">
                   <div className="relative group">
                     <User className="absolute left-5 top-1/2 -translate-y-1/2 text-[#899EC8] group-focus-within:text-[#1D2889] transition-colors h-4 w-4 sm:h-5 sm:w-5" />
                     <input 
                       type="text" 
                       placeholder="Seu nome" 
-                      className="w-full pl-12 sm:pl-14 pr-6 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-[#E2E7EF]/20 border border-[#E2E7EF] text-[#050637] placeholder:text-[#899EC8] focus:ring-4 focus:ring-[#1D2889]/5 focus:border-[#1D2889] transition-all outline-none text-base sm:text-lg font-bold shadow-sm"
+                      className="w-full pl-12 sm:pl-14 pr-6 py-4 rounded-xl sm:rounded-2xl bg-[#E2E7EF]/20 border border-[#E2E7EF] text-[#050637] placeholder:text-[#899EC8] focus:ring-4 focus:ring-[#1D2889]/5 focus:border-[#1D2889] transition-all outline-none text-base sm:text-lg font-bold shadow-sm"
                       value={name}
                       onChange={e => setName(e.target.value)}
                     />
@@ -202,15 +239,14 @@ const App: React.FC = () => {
                   <button 
                     disabled={!name}
                     onClick={handleNext}
-                    className="w-full bg-[#1D2889] hover:bg-[#12165F] disabled:opacity-30 text-white font-extrabold py-4 sm:py-5 rounded-xl sm:rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-[#1D2889]/10 hover:shadow-[#1D2889]/20 text-lg sm:text-xl group active:scale-[0.98]"
+                    className="w-full bg-[#1D2889] hover:bg-[#12165F] disabled:opacity-30 text-white font-extrabold py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-[#1D2889]/10 hover:shadow-[#1D2889]/20 text-lg sm:text-xl group active:scale-[0.98]"
                   >
                     Iniciar Diagnóstico <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-4 sm:gap-6 opacity-40 pt-4 sm:pt-8">
+                <div className="flex items-center gap-4 opacity-30 pt-4">
                    <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" className="h-3 sm:h-4 grayscale" alt="Logo" />
-                   <div className="h-3 sm:h-4 w-px bg-[#899EC8]"></div>
                    <span className="text-[8px] sm:text-[10px] font-black text-[#899EC8] uppercase tracking-widest">Reflex AC Intelligence</span>
                 </div>
               </div>
@@ -235,7 +271,7 @@ const App: React.FC = () => {
                         setAnswers(newAnswers);
                         handleNext();
                       }}
-                      className="group text-left p-4 sm:p-7 lg:p-8 rounded-xl sm:rounded-2xl border border-[#E2E7EF] bg-white hover:border-[#3E5ABA] hover:bg-[#E2E7EF]/30 transition-all flex items-center justify-between active:scale-[0.98] shadow-sm min-h-[60px] sm:min-h-[100px]"
+                      className="group text-left p-4 sm:p-7 rounded-xl sm:rounded-2xl border border-[#E2E7EF] bg-white hover:border-[#3E5ABA] hover:bg-[#E2E7EF]/30 transition-all flex items-center justify-between active:scale-[0.98] shadow-sm min-h-[60px] sm:min-h-[100px]"
                     >
                       <span className="font-bold text-sm sm:text-lg lg:text-xl text-[#444E68] group-hover:text-[#050637] leading-tight pr-4">{option}</span>
                       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-[#E2E7EF] flex items-center justify-center group-hover:bg-[#3E5ABA] group-hover:border-[#3E5ABA] transition-all shrink-0">
@@ -245,17 +281,17 @@ const App: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="flex justify-center pt-2 sm:pt-4">
+                <div className="flex justify-center pt-2">
                   <button onClick={handleBack} className="text-[10px] sm:text-xs font-black text-[#899EC8] hover:text-[#1D2889] uppercase tracking-widest transition-all px-6 py-2 border border-transparent hover:border-[#E2E7EF] rounded-full">
                     Voltar
                   </button>
                 </div>
               </div>
             ) : step === 21 ? (
-              <div className="text-center space-y-10 sm:space-y-12 animate-in zoom-in-95 duration-700 py-6 sm:py-12 flex flex-col items-center">
-                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-[#E2E7EF] rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mb-2 relative">
+              <div className="text-center space-y-10 animate-in zoom-in-95 duration-700 py-6 flex flex-col items-center">
+                <div className="w-20 h-20 sm:w-32 bg-[#E2E7EF] rounded-2xl flex items-center justify-center mb-2 relative">
                    <div className="absolute inset-0 bg-[#3E5ABA]/10 blur-2xl rounded-full"></div>
-                   <Rocket className="h-10 w-10 sm:h-16 sm:w-16 text-[#1D2889] relative z-10" />
+                   <Rocket className="h-10 w-10 sm:h-16 text-[#1D2889] relative z-10" />
                 </div>
                 <div className="space-y-4 px-4">
                   <h2 className="text-3xl sm:text-6xl font-black text-[#050637] tracking-tighter uppercase leading-none">Finalizado.</h2>
@@ -265,48 +301,49 @@ const App: React.FC = () => {
                 </div>
                 <button 
                   onClick={handleComplete} 
-                  className="w-full max-w-xs bg-[#1D2889] text-white font-extrabold py-4 sm:py-6 rounded-xl sm:rounded-2xl flex items-center justify-center gap-4 transition-all shadow-2xl hover:bg-[#12165F] text-lg sm:text-xl group active:scale-[0.98]"
+                  className="w-full max-w-xs bg-[#1D2889] text-white font-extrabold py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-4 transition-all shadow-2xl hover:bg-[#12165F] text-lg sm:text-xl group active:scale-[0.98]"
                 >
                   Ver Meu Score <Zap className="h-5 w-5 text-[#B98164] fill-[#B98164]" />
                 </button>
               </div>
             ) : (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-8 sm:space-y-12 py-2 sm:py-4">
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-6 sm:space-y-12 py-2">
                 
-                {/* Report Header - Fixed clipping on mobile */}
-                <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-center sm:items-end justify-between border-b border-[#E2E7EF] pb-4 sm:pb-10 px-2 sm:px-4">
-                   <div className="space-y-3 text-center sm:text-left flex-1 w-full sm:w-auto">
+                {/* Report Header - Enhanced Vertical Balance */}
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-center justify-between border-b border-[#E2E7EF] pb-8 sm:pb-12 px-2 sm:px-4">
+                   <div className="space-y-3 text-center sm:text-left flex-1 w-full">
                       <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-3 sm:h-5 mb-4 opacity-60 mx-auto sm:mx-0" />
-                      <h2 className="text-3xl sm:text-5xl font-black text-[#050637] tracking-tighter uppercase leading-[1] sm:leading-[0.9]">Diagnóstico<br/>Estratégico</h2>
+                      <h2 className="text-2xl sm:text-5xl font-black text-[#050637] tracking-tighter uppercase leading-[1.1] sm:leading-[1]">Diagnóstico<br/>Estratégico</h2>
                       <p className="text-[#899EC8] font-bold text-[10px] sm:text-sm tracking-widest uppercase">ID Auditoria: #{Math.floor(Math.random() * 999999)}</p>
                    </div>
                    
-                   <div className="relative group shrink-0 py-2">
-                      <div className="relative flex flex-col items-center">
-                         <span className="text-[6.5rem] sm:text-[11rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-[#1D2889] to-[#050637] leading-[0.9] sm:leading-[0.8] tracking-tighter">
-                           {analysis?.score}
-                         </span>
-                         <span className="text-[#899EC8] font-extrabold text-sm sm:text-3xl mt-[-5px] sm:mt-[-15px] uppercase">PONTOS / 100</span>
-                      </div>
+                   {/* Score Container - Perfect Centering with Vertical Balance and adjusted spacing */}
+                   <div className="relative shrink-0 flex flex-col items-center justify-center text-center py-8 sm:py-10 min-w-[200px] sm:min-h-[240px]">
+                      <span className="text-[7rem] sm:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-[#1D2889] to-[#050637] leading-none sm:leading-[0.8] tracking-tighter block mb-2 sm:mb-0">
+                        {analysis?.score}
+                      </span>
+                      <span className="text-[#899EC8] font-extrabold text-[12px] sm:text-3xl uppercase tracking-widest sm:-mt-4">
+                        PONTOS / 100
+                      </span>
                    </div>
                 </div>
 
                 {/* Insights Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10 px-2 sm:px-4">
-                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-[#E2E7EF] space-y-4 sm:space-y-6">
+                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-10 rounded-2xl border border-[#E2E7EF] space-y-3 sm:space-y-6">
                     <div className="flex items-center gap-3">
-                       <Award className="h-4 w-4 sm:h-5 sm:w-5 text-[#1D2889]" />
-                       <h3 className="text-[#050637] font-black text-sm sm:text-xl uppercase tracking-tight">O Veredito</h3>
+                       <Award className="h-4 w-4 sm:h-5 text-[#1D2889]" />
+                       <h3 className="text-[#050637] font-black text-xs sm:text-xl uppercase tracking-tight">O Veredito</h3>
                     </div>
                     <p className="text-xs sm:text-xl text-[#444E68] leading-relaxed font-bold">
                       {analysis?.verdict}
                     </p>
                   </div>
 
-                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-[#E2E7EF] space-y-4 sm:space-y-6">
+                  <div className="bg-[#E2E7EF]/20 p-5 sm:p-10 rounded-2xl border border-[#E2E7EF] space-y-3 sm:space-y-6">
                     <div className="flex items-center gap-3">
-                       <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-[#B98164]" />
-                       <h3 className="text-[#050637] font-black text-sm sm:text-xl uppercase tracking-tight">Próximos Passos</h3>
+                       <TrendingUp className="h-4 w-4 sm:h-5 text-[#B98164]" />
+                       <h3 className="text-[#050637] font-black text-xs sm:text-xl uppercase tracking-tight">Próximos Passos</h3>
                     </div>
                     <p className="text-xs sm:text-xl text-[#444E68] leading-relaxed font-bold">
                       {analysis?.recommendation}
@@ -314,15 +351,11 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* High Impact CTA Box */}
-                <div className="relative bg-[#050637] p-6 sm:p-12 rounded-[2rem] sm:rounded-[3.5rem] text-center space-y-6 sm:space-y-10 shadow-2xl overflow-hidden group mx-1 sm:mx-4">
-                   <div className="absolute top-[-20%] right-[-10%] opacity-[0.03] pointer-events-none group-hover:translate-x-[-20px] transition-transform duration-1000 rotate-12 scale-110">
-                      <Zap className="h-[250px] sm:h-[400px] w-[250px] sm:w-[400px] text-white" />
-                   </div>
-                   
+                {/* CTA Box */}
+                <div className="relative bg-[#050637] p-6 sm:p-12 rounded-[2rem] sm:rounded-[3.5rem] text-center space-y-6 sm:space-y-10 shadow-2xl overflow-hidden mx-1 sm:mx-4">
                    <div className="space-y-3 sm:space-y-6 relative z-10 max-w-2xl mx-auto px-1 sm:px-4">
-                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-[#899EC8] text-[8px] sm:text-[10px] font-black uppercase tracking-widest mb-2">
-                        <Target className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /> Foco em Resultados
+                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-[#899EC8] text-[8px] sm:text-[10px] font-black uppercase tracking-widest">
+                        <Target className="w-2.5 h-2.5 sm:w-3.5" /> Foco em Resultados
                      </div>
                      <h3 className="text-xl sm:text-5xl font-black text-white tracking-tighter leading-tight sm:leading-[1.05]">
                        Pronto para escalar seu faturamento?
@@ -336,28 +369,28 @@ const App: React.FC = () => {
                      <button 
                        onClick={sendEmailNotification}
                        disabled={isSending}
-                       className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-6 bg-[#3E5ABA] text-white font-black px-6 sm:px-14 py-4 sm:py-6 rounded-xl sm:rounded-2xl hover:bg-[#1D2889] hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-[#3E5ABA]/20 text-[11px] sm:text-2xl whitespace-nowrap overflow-hidden"
+                       className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-6 bg-[#3E5ABA] text-white font-black px-6 sm:px-14 py-4 rounded-xl sm:rounded-2xl hover:bg-[#1D2889] hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-[#3E5ABA]/20 text-[11px] sm:text-2xl whitespace-nowrap"
                      >
                        {isSending ? (
-                         <Loader2 className="h-4 w-4 sm:h-8 sm:w-8 animate-spin" />
+                         <Loader2 className="h-4 w-4 sm:h-8 animate-spin" />
                        ) : (
                          <>
                           <span className="truncate uppercase">AGENDAR MINHA ASESSORIA GRATUITA</span> 
-                          <Calendar className="h-3.5 w-3.5 sm:h-7 sm:w-7 shrink-0" />
+                          <Calendar className="h-3.5 w-3.5 sm:h-7 shrink-0" />
                          </>
                        )}
                      </button>
                      <div className="flex items-center justify-center gap-3 sm:gap-6 text-[#899EC8]/40 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em]">
-                       <span className="flex items-center gap-1.5 sm:gap-2 shrink-0"><CheckCircle2 className="h-2.5 w-2.5 sm:h-4 sm:w-4 text-[#B98164]" /> Vagas Limitadas</span>
+                       <span className="flex items-center gap-1.5 sm:gap-2 shrink-0"><CheckCircle2 className="h-2.5 w-2.5 sm:h-4 text-[#B98164]" /> Vagas Limitadas</span>
                        <div className="h-0.5 w-0.5 sm:h-1 sm:w-1 bg-[#444E68] rounded-full shrink-0"></div>
                        <span className="shrink-0 uppercase">Janeiro 2026</span>
                      </div>
                    </div>
                 </div>
 
-                <div className="text-center pt-4 sm:pt-6 border-t border-[#E2E7EF] px-4">
-                  <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-[#1D2889] transition-colors text-[10px] sm:text-base group px-6 py-3 rounded-full hover:bg-[#E2E7EF]/20">
-                    <Globe className="h-4 w-4 sm:h-5 sm:w-5" /> Ver estudos de caso Reflex AC <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+                <div className="text-center pt-4 border-t border-[#E2E7EF] px-4">
+                  <a href="https://reflexbr.com/home-2688" target="_blank" className="inline-flex items-center gap-2 text-[#899EC8] font-bold hover:text-[#1D2889] transition-colors text-[10px] sm:text-base group px-4 py-2 rounded-full hover:bg-[#E2E7EF]/20">
+                    <Globe className="h-4 w-4 sm:h-5" /> Ver estudos de caso Reflex AC <ArrowRight className="w-3 h-3 sm:w-4 group-hover:translate-x-1 transition-transform" />
                   </a>
                 </div>
               </div>
@@ -366,7 +399,7 @@ const App: React.FC = () => {
         </div>
         
         {/* Footer branding */}
-        <div className="mt-4 sm:mt-12 opacity-30 flex items-center gap-3 text-[8px] sm:text-[10px] px-4">
+        <div className="mt-4 sm:mt-8 opacity-25 flex items-center gap-3 text-[8px] sm:text-[10px] px-4">
           <span className="font-black text-[#686A86] tracking-widest uppercase">Built with KN Growth</span>
           <div className="h-3 w-px bg-[#E2E7EF]"></div>
           <img src="https://storage.googleapis.com/msgsndr/WlnojMjrKnk5cMGiCAD4/media/6963aae098efbd2584e5bc32.png" alt="Reflex" className="h-2.5 sm:h-4 grayscale" />
