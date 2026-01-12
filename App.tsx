@@ -34,7 +34,7 @@ const QUESTIONS = [
   { id: 13, text: "Hoje seus leads entendem claramente o valor da sua oferta?", options: ["Sim, entendem perfeitamente", "Entendem parcialmente", "Ficam confusos", "Não entendem"] },
   { id: 14, text: "Você sente que poderia cobrar mais pelo seu serviço ou produto?", options: ["Sim, com certeza", "Talvez", "Pouco", "Não"] },
   { id: 15, text: "Qual é hoy o maior obstáculo para converter mais vendas?", options: ["Falta de volume de leads", "Leads desqualificados", "Falta de processo estruturado", "Falta de uma landing page estratégica"] },
-  { id: 16, text: "Se sua landing page convertesse mais, o impacto seria:", options: ["Crescimento imediato", "Aumento gradual", "Melhor organização do processo", "Ainda não sei"] },
+  { id: 16, text: "Se sua landing page convertesse mais, o impacto seria:", options: ["Crescimento imediato", "Aumento gradual", "Melhor organization do processo", "Ainda não sei"] },
   { id: 17, text: "Você estaria disposto a investir em uma landing page estratégica com automações?", options: ["Sim, agora", "Sim, em breve", "Talvez", "Não no momento"] },
   { id: 18, text: "O que você mais espera de uma landing page de alta conversão?", options: ["Mais vendas", "Leads mais qualificados", "Autoridade profissional", "Todos os itens acima"] },
   { id: 19, text: "Se você tivesse um funil automatizado hoje, isso ajudaria a vender mais?", options: ["Com certeza", "Provavelmente", "Talvez", "Não sei"] },
@@ -333,7 +333,7 @@ const App: React.FC = () => {
                               <Award className="h-3 w-3 sm:h-5 text-white" />
                               <h3 className="text-white font-black text-[7px] sm:text-[10px] uppercase tracking-[0.2em]">O Veredito</h3>
                            </div>
-                           <p className="text-white text-[10px] sm:text-lg lg:text-xl font-bold leading-tight sm:leading-relaxed">
+                           <p className="text-white text-[13px] sm:text-xl lg:text-2xl font-bold leading-tight sm:leading-relaxed">
                               {analysis?.verdict}
                            </p>
                         </div>
@@ -343,7 +343,7 @@ const App: React.FC = () => {
                               <TrendingUp className="h-3 w-3 sm:h-5 text-[#B98164]" />
                               <h3 className="text-white font-black text-[7px] sm:text-[10px] uppercase tracking-[0.2em]">Próximos Passos</h3>
                            </div>
-                           <p className="text-white text-[10px] sm:text-lg lg:text-xl font-bold leading-tight sm:leading-relaxed">
+                           <p className="text-white text-[13px] sm:text-xl lg:text-2xl font-bold leading-tight sm:leading-relaxed">
                               {analysis?.recommendation}
                            </p>
                         </div>
@@ -363,19 +363,19 @@ const App: React.FC = () => {
                      </div>
                    </div>
 
-                   {/* 4. MAIN ACTION BUTTON - INCREASED FONT SIZE & NO WRAP */}
+                   {/* 4. MAIN ACTION BUTTON - STRENGTHENED FONT SIZE & NO WRAP */}
                    <div className="flex flex-col gap-6 sm:gap-10 items-center relative z-10 pt-2 sm:pt-4">
                      <button 
                        onClick={sendEmailNotification}
                        disabled={isSending}
-                       className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-6 bg-[#3E5ABA] text-white font-black px-6 sm:px-16 py-4 sm:py-7 rounded-[1rem] sm:rounded-[2.5rem] hover:bg-[#1D2889] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_15px_30px_-10px_rgba(62,90,186,0.5)] text-[10px] sm:text-3xl uppercase tracking-tighter whitespace-nowrap"
+                       className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-6 bg-[#3E5ABA] text-white font-black px-6 sm:px-16 py-4 sm:py-8 rounded-[1rem] sm:rounded-[2.5rem] hover:bg-[#1D2889] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_15px_30px_-10px_rgba(62,90,186,0.5)] text-[13px] sm:text-3xl lg:text-4xl uppercase tracking-tighter whitespace-nowrap"
                      >
                        {isSending ? (
                          <Loader2 className="h-4 w-4 sm:h-8 animate-spin" />
                        ) : (
                          <>
                           <span className="truncate">AGENDAR MINHA ASESSORIA GRATUITA</span> 
-                          <Calendar className="h-3.5 w-3.5 sm:h-8 shrink-0" />
+                          <Calendar className="h-3.5 w-3.5 sm:h-10 shrink-0" />
                          </>
                        )}
                      </button>
